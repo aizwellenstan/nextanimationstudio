@@ -508,9 +508,14 @@ export default function Home({ data }) {
   }, [language, data])
 
   useEffect(() => {
-    const res = axios.get(`http://nas.api.smartores.com/getHome`)
-    const data = res.data
-    // console.log(data)
+    // console.log('test!')
+    // const res = axios.get(`https://nas.api.smartores.com/getHome`)
+    // https://jsonplaceholder.typicode.com/todos/1
+    // https://data.epa.gov.tw/api/v1/aqx_p_432?limit=1000&api_key=9be7b239-557b-4c10-9775-78cadfc555e9&format=json
+    const res = axios
+      .get(`https://nas.api.smartores.com/getHome`)
+      .then((response) => console.log(response))
+      .catch((error) => console.log(error))
   }, [])
 
   const handleClear = () => {
