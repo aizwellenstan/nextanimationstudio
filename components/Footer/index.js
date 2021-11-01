@@ -35,7 +35,7 @@ export default function Footer() {
       </StyleSiteMap>
       <StyleAside>
         <StyleLogo>
-          <Image src="/global/logo.png" alt="me" layout="responsive" width={274} height={139} />
+          <Image src="/global/logo.png" alt="me" layout="responsive" width={279} height={72} />
         </StyleLogo>
         <p className="copyright">Copyright©2021 Inc. All Rights Reserved</p>
       </StyleAside>

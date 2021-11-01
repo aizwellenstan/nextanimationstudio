@@ -5,11 +5,11 @@ export const StyleHeader = styled.header`
   left: 0;
   top: 0;
   width: 100%;
-  height: 30px;
+  height: 40px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  /* background-color: #000; */
+  /* background-color: #ff0000; */
   z-index: ${({ theme }) => theme.zHeader};
 
   @media (min-width: ${({ theme }) => theme.breakPiont.md}) {
@@ -22,11 +22,11 @@ export const StyleHeader = styled.header`
 `
 
 export const StyleLogo = styled.div`
-  width: 26px;
+  width: 56px;
   margin-left: 12px;
 
   @media (min-width: ${({ theme }) => theme.breakPiont.md}) {
-    width: 35px;
+    width: 36px;
     margin-left: 24px;
   }
 
@@ -40,8 +40,8 @@ export const StyleHamburger = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 30px;
-  height: 30px;
+  width: 40px;
+  height: 40px;
   background-color: #fff;
   cursor: pointer;
   transition: 0.2s ease-in-out;

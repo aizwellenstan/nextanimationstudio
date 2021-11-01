@@ -13,6 +13,12 @@ import { v4 as uuidv4 } from 'uuid'
 
 const StyleBanner = styled.div`
   width: 100%;
+  max-width: 1500px;
+  margin: 0 auto;
+
+  @media (min-width: ${({ theme }) => theme.breakPiont.md}) {
+    padding: 0 30px;
+  }
 `
 
 const StyleTitle = styled.h1`
@@ -64,27 +70,31 @@ export default function OurUpdatesSubpage({ data }) {
   }, [language, data])
 
   return (
-    <Container>
-      <Breadcrumb router={router} name={pageData.title} />
+    <>
+      <Container>
+        <Breadcrumb router={router} name={pageData.title} />
+      </Container>
       <StyleBanner>
         <Image src={pageData.banner} alt="" layout="responsive" width={1440} height={760} />
       </StyleBanner>
-      <StyleTitle>{pageData.title}</StyleTitle>
-      <StyleMain>
-        {pageData.section.map((item) => {
-          if (item.type === 'text') {
-            return <SectionText key={uuidv4()} item={item} />
-          }
-          if (item.type === 'album') {
-            return <SectionAlbum key={uuidv4()} item={item} />
-          }
-          if (item.type === 'photo') {
-            return <SectionPhoto key={uuidv4()} item={item} />
-          }
-        })}
-        <Pagination previous={`${path}${pageData.previousPage}`} next={`${path}${pageData.nextPage}`} />
-      </StyleMain>
-    </Container>
+      <Container>
+        <StyleTitle>{pageData.title}</StyleTitle>
+        <StyleMain>
+          {pageData.section.map((item) => {
+            if (item.type === 'text') {
+              return <SectionText key={uuidv4()} item={item} />
+            }
+            if (item.type === 'album') {
+              return <SectionAlbum key={uuidv4()} item={item} />
+            }
+            if (item.type === 'photo') {
+              return <SectionPhoto key={uuidv4()} item={item} />
+            }
+          })}
+          <Pagination previous={`${path}${pageData.previousPage}`} next={`${path}${pageData.nextPage}`} />
+        </StyleMain>
+      </Container>
+    </>
   )
 }
 

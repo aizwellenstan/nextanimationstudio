@@ -7,7 +7,7 @@ const StyleContainer = styled.div`
   margin: 0 auto;
   padding: 0 30px;
   /* background-color: rgba(0, 0, 0, 0.8); */
-  border: 1px solid seagreen;
+  /* border: 1px solid seagreen; */
 
   @media (min-width: ${({ theme }) => theme.breakPiont.md}) {
     padding: 0 80px;

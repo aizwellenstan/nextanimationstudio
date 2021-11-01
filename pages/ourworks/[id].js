@@ -14,6 +14,12 @@ import { v4 as uuidv4 } from 'uuid'
 
 const StyleBanner = styled.div`
   width: 100%;
+  max-width: 1500px;
+  margin: 0 auto;
+
+  @media (min-width: ${({ theme }) => theme.breakPiont.md}) {
+    padding: 0 30px;
+  }
 `
 
 const StyleTitle = styled.h1`
@@ -112,45 +118,49 @@ export default function OurWorksSubpage({ data }) {
   }, [language, data])
 
   return (
-    <Container>
-      <Breadcrumb router={router} name={pageData.title} />
+    <>
+      <Container>
+        <Breadcrumb router={router} name={pageData.title} />
+      </Container>
       <StyleBanner>
         <Image src={pageData.banner} alt="" layout="responsive" width={1440} height={760} />
       </StyleBanner>
-      <StyleTitle>{pageData.title}</StyleTitle>
-      <StyleLinks>
-        <div className="proportion">
-          {pageData.proportion.map((item) => {
-            return <StylePercentage key={item.id} width={item.percentage} color={item.color} />
+      <Container>
+        <StyleTitle>{pageData.title}</StyleTitle>
+        <StyleLinks>
+          <div className="proportion">
+            {pageData.proportion.map((item) => {
+              return <StylePercentage key={item.id} width={item.percentage} color={item.color} />
+            })}
+          </div>
+          <div className="link-group">
+            <a href={pageData.youtubeLink} target="_blank" rel="noreferrer">
+              <IconYoutube fill="#15ff93" />
+            </a>
+            <a href={pageData.websiteLink} target="_blank" rel="noreferrer">
+              <IconWebsite fill="#15ff93" />
+            </a>
+          </div>
+        </StyleLinks>
+        <StyleMain>
+          {pageData.section.map((item) => {
+            if (item.type === 'text') {
+              return <SectionText key={uuidv4()} item={item} />
+            }
+            if (item.type === 'album') {
+              return <SectionAlbum key={uuidv4()} item={item} />
+            }
+            if (item.type === 'photo') {
+              return <SectionPhoto key={uuidv4()} item={item} />
+            }
+            if (item.type === 'team') {
+              return <SectionTeam key={uuidv4()} item={item} />
+            }
           })}
-        </div>
-        <div className="link-group">
-          <a href={pageData.youtubeLink} target="_blank" rel="noreferrer">
-            <IconYoutube fill="#15ff93" />
-          </a>
-          <a href={pageData.websiteLink} target="_blank" rel="noreferrer">
-            <IconWebsite fill="#15ff93" />
-          </a>
-        </div>
-      </StyleLinks>
-      <StyleMain>
-        {pageData.section.map((item) => {
-          if (item.type === 'text') {
-            return <SectionText key={uuidv4()} item={item} />
-          }
-          if (item.type === 'album') {
-            return <SectionAlbum key={uuidv4()} item={item} />
-          }
-          if (item.type === 'photo') {
-            return <SectionPhoto key={uuidv4()} item={item} />
-          }
-          if (item.type === 'team') {
-            return <SectionTeam key={uuidv4()} item={item} />
-          }
-        })}
-        <Pagination previous={`${path}${pageData.previousPage}`} next={`${path}${pageData.nextPage}`} />
-      </StyleMain>
-    </Container>
+          <Pagination previous={`${path}${pageData.previousPage}`} next={`${path}${pageData.nextPage}`} />
+        </StyleMain>
+      </Container>
+    </>
   )
 }
 

@@ -24,10 +24,12 @@ const StyleList = styled.div`
 `
 
 const StyleItem = styled.div`
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  margin-top: 60px;
+  & > a {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-top: 60px;
+  }
 
   &:last-child {
     margin-bottom: 60px;
@@ -126,19 +128,23 @@ export default function OurBusiness({ data }) {
     return list.map((item) => {
       return (
         <StyleItem key={item.id}>
-          <StyleImage>
-            <StyleTitle>
-              <Link href={`${path}/ourbusiness/${item.id}`} passHref>
-                <a>
-                  <p>{item.title}</p>
-                  <i>
-                    <IconArrowRightBottom fill="#15ff93" />
-                  </i>
-                </a>
-              </Link>
-            </StyleTitle>
-            <Image src={item.image} alt="" layout="responsive" width={660} height={300} />
-          </StyleImage>
+          <Link href={`${path}/ourbusiness/${item.id}`} passHref>
+            <a>
+              <StyleImage>
+                <StyleTitle>
+                  <Link href={`${path}/ourbusiness/${item.id}`} passHref>
+                    <a>
+                      <p>{item.title}</p>
+                      <i>
+                        <IconArrowRightBottom fill="#15ff93" />
+                      </i>
+                    </a>
+                  </Link>
+                </StyleTitle>
+                <Image src={item.image} alt="" layout="responsive" width={660} height={300} />
+              </StyleImage>
+            </a>
+          </Link>
         </StyleItem>
       )
     })

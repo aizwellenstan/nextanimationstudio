@@ -2,8 +2,10 @@ import axios from 'axios'
 import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/router'
 import Image from 'next/image'
+import Link from 'next/link'
 import styled from 'styled-components'
 import useLanguage from '../hooks/useLanguage'
+import usePath from '../hooks/usePath'
 import { LANGUAGE_CN, LANGUAGE_JP, LANGUAGE_EN } from '../utils/type'
 import { Container, ContainerFluid } from '../components/Layout/Wrapper'
 import { IconArrowRightBottom, IconLocation, IconPhone } from '../components/Icons'
@@ -41,8 +43,9 @@ const StyleKv = styled.div`
       font-size: 30px;
       font-weight: 600;
       font-style: italic;
+      letter-spacing: 6px;
       text-transform: uppercase;
-      transform: translateY(-50%);
+      transform: translateY(-30%);
       line-height: 1.1;
 
       @media (min-width: ${({ theme }) => theme.breakPiont.md}) {
@@ -63,9 +66,11 @@ const StyleKv = styled.div`
       top: 50%;
       transform: translate(0%, -50%);
       width: 220px;
-      /* display: flex; */
-      /* flex-wrap: wrap; */
-      /* justify-content: space-between; */
+      display: none;
+
+      @media (min-width: ${({ theme }) => theme.breakPiont.sm}) {
+        display: block;
+      }
 
       p {
         text-align: right;
@@ -109,9 +114,10 @@ const StyleIntro = styled.div`
   h2 {
     flex: 0 0 auto;
     font-size: 18px;
-    font-weight: 600;
+    font-weight: 800;
     font-style: italic;
     line-height: 1.2;
+    letter-spacing: 6px;
     text-transform: uppercase;
     transform: translateY(-50%);
 
@@ -132,6 +138,7 @@ const StyleIntro = styled.div`
   article {
     flex: 0 1 auto;
     padding: 8% 0px;
+    padding-bottom: 20%;
     position: relative;
 
     @media (min-width: ${({ theme }) => theme.breakPiont.xl}) {
@@ -227,6 +234,10 @@ const StyleWorks = styled.section`
 const StyleList = styled.div`
   display: flex;
   flex-wrap: wrap;
+
+  a {
+    color: #fff;
+  }
 
   .des {
     flex: 1 0 100%;
@@ -365,12 +376,16 @@ const StyleFindUs = styled.div`
       color: #fff;
       background-color: ${({ theme }) => theme.color.third};
       border-radius: 40px;
-      font-size: 20px;
+      font-size: 16px;
       line-height: 2.2;
       letter-spacing: 2px;
       text-decoration: none;
       padding: 0 30px;
       margin-top: 30px;
+
+      @media (min-width: ${({ theme }) => theme.breakPiont.md}) {
+        font-size: 20px;
+      }
     }
   }
 
@@ -390,6 +405,10 @@ const StyleFindUs = styled.div`
     .form-group {
       border-bottom: 1px solid ${({ theme }) => theme.color.gray};
 
+      &.no-underline {
+        border-bottom: 0px;
+      }
+
       &:last-child {
         border-bottom: 0px;
       }
@@ -397,7 +416,7 @@ const StyleFindUs = styled.div`
       label {
         display: flex;
         flex-wrap: wrap;
-        align-items: baseline;
+        align-items: center;
         /* flex-direction: column; */
 
         span {
@@ -419,11 +438,15 @@ const StyleFindUs = styled.div`
 
       textarea {
         flex: 0 0 100%;
+        outline: none;
         background-color: transparent;
         border: 1px solid ${({ theme }) => theme.color.gray};
+        /* border-bottom: 0px; */
+        border-radius: 0;
         padding: 12px;
         color: #fff;
         font-size: 16px;
+        font-family: 'Mulish', sans-serif;
       }
     }
 
@@ -458,6 +481,7 @@ export default function Home({ data }) {
   const formData = useRef({})
   const router = useRouter()
   const language = useLanguage()
+  const path = usePath(language)
 
   if (router.asPath.includes('?')) {
     const index = router.asPath.indexOf('?')
@@ -507,16 +531,16 @@ export default function Home({ data }) {
     }
   }, [language, data])
 
-  useEffect(() => {
-    // console.log('test!')
-    // const res = axios.get(`https://nas.api.smartores.com/getHome`)
-    // https://jsonplaceholder.typicode.com/todos/1
-    // https://data.epa.gov.tw/api/v1/aqx_p_432?limit=1000&api_key=9be7b239-557b-4c10-9775-78cadfc555e9&format=json
-    const res = axios
-      .get(`https://nas.api.smartores.com/getHome`)
-      .then((response) => console.log(response))
-      .catch((error) => console.log(error))
-  }, [])
+  // useEffect(() => {
+  //   // console.log('test!')
+  //   // const res = axios.get(`https://nas.api.smartores.com/getHome`)
+  //   // https://jsonplaceholder.typicode.com/todos/1
+  //   // https://data.epa.gov.tw/api/v1/aqx_p_432?limit=1000&api_key=9be7b239-557b-4c10-9775-78cadfc555e9&format=json
+  //   const res = axios
+  //     .get(`https://nas.api.smartores.com/getHome`)
+  //     .then((response) => console.log(response))
+  //     .catch((error) => console.log(error))
+  // }, [])
 
   const handleClear = () => {
     setInputName('')
@@ -527,7 +551,7 @@ export default function Home({ data }) {
 
   const handleSubmit = async () => {
     // console.log(formData.current)
-    const res = await axios.post(`${process.env.HOST}/api/getHome`, formData.current)
+    const res = await axios.post(`https://nas.api.smartores.com/getHome`, formData.current)
     const data = res.data
     console.log(data)
   }
@@ -612,14 +636,18 @@ export default function Home({ data }) {
             {pageData.list.map((item) => {
               return (
                 <StyleItem key={item.id}>
-                  <Image
-                    src={item.image.url}
-                    alt=""
-                    layout="responsive"
-                    width={item.image.width}
-                    height={item.image.height}
-                  />
-                  <p>{item.title}</p>
+                  <Link href={`${path}/ourworks/${item.id}`} passHref>
+                    <a>
+                      <Image
+                        src={item.image.url}
+                        alt=""
+                        layout="responsive"
+                        width={item.image.width}
+                        height={item.image.height}
+                      />
+                      <p>{item.title}</p>
+                    </a>
+                  </Link>
                 </StyleItem>
               )
             })}
@@ -685,7 +713,7 @@ export default function Home({ data }) {
                 </select>
               </label>
             </div>
-            <div className="form-group">
+            <div className="form-group no-underline">
               <label>
                 <span>Anything you want to say…</span>
                 <textarea rows="5" name="other" value={textareaOther} onChange={handleTextareaOther} />
@@ -707,7 +735,7 @@ export default function Home({ data }) {
 }
 
 export const getStaticProps = async () => {
-  const res = await fetch(`${process.env.HOST}/api/getHome`)
+  const res = await fetch(`https://nas.api.smartores.com/getHome`)
   const data = await res.json()
 
   return {

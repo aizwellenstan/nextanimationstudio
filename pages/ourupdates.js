@@ -77,6 +77,7 @@ const StyleItem = styled.div`
   margin-top: 60px;
 
   a {
+    display: block;
     text-decoration: none;
   }
 
@@ -246,9 +247,9 @@ export default function OurUpdates({ data }) {
             {pageData.list.map((item) => {
               return (
                 <StyleItem key={item.id}>
-                  <Image src={item.image} alt="" layout="responsive" width={660} height={180} />
                   <Link href={`${path}/ourupdates/${item.id}`} passHref>
                     <a>
+                      <Image src={item.image} alt="" layout="responsive" width={660} height={180} />
                       <p className="date">
                         <span className="year">{item.date.year}</span>
                         <span className="month">{item.date.month}</span>

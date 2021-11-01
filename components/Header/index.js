@@ -1,5 +1,8 @@
 import { useState } from 'react'
 import Image from 'next/image'
+import Link from 'next/link'
+import useLanguage from '../../hooks/useLanguage'
+import usePath from '../../hooks/usePath'
 import { StyleHeader, StyleLogo, StyleHamburger, StyleNav } from './style'
 import { IconInstagram, IconTwitter, IconYoutube, IconFacebook } from '../Icons'
 import LanguageButton from './LanguageButton'
@@ -7,6 +10,8 @@ import MenuButton from './MenuButton'
 
 export default function Header() {
   const [isNavOpen, setIsNavOpen] = useState(false)
+  const language = useLanguage()
+  const path = usePath(language)
 
   const navOpenHandler = () => {
     setIsNavOpen(!isNavOpen)
@@ -15,7 +20,11 @@ export default function Header() {
   return (
     <StyleHeader>
       <StyleLogo>
-        <Image src="/global/logo.png" alt="me" layout="responsive" width={274} height={139} />
+        <Link href={`${path}/home`} passHref>
+          <a>
+            <Image src="/global/logo.png" alt="me" layout="responsive" width={279} height={72} />
+          </a>
+        </Link>
       </StyleLogo>
       <StyleHamburger className={isNavOpen ? 'open' : null} onClick={navOpenHandler}>
         <div className="line-group">
