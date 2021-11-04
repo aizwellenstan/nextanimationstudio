@@ -31,6 +31,7 @@ export const StyleSiteMap = styled.div`
     flex-direction: row;
     justify-content: space-between;
     align-items: flex-end;
+    padding-top: 60px;
   }
 
   .menu {
@@ -40,6 +41,11 @@ export const StyleSiteMap = styled.div`
     @media (min-width: ${({ theme }) => theme.breakPiont.md}) {
       flex-direction: row;
       flex-wrap: wrap;
+      margin-bottom: 10%;
+    }
+
+    @media (min-width: ${({ theme }) => theme.breakPiont.lg}) {
+      margin-bottom: 0;
     }
   }
 
@@ -71,7 +77,7 @@ export const StyleSiteMap = styled.div`
       }
 
       @media (min-width: ${({ theme }) => theme.breakPiont.lg}) {
-        margin-bottom: 14px;
+        margin-bottom: 20px;
       }
 
       a {
@@ -80,7 +86,7 @@ export const StyleSiteMap = styled.div`
         height: 20px;
 
         @media (min-width: ${({ theme }) => theme.breakPiont.md}) {
-          margin-left: 10px;
+          margin-left: 20px;
         }
       }
     }

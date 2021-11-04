@@ -10,12 +10,14 @@ const StyleMenu = styled.div`
 
   @media (min-width: ${({ theme }) => theme.breakPiont.md}) {
     width: 33%;
+    margin-bottom: 14px;
   }
 
   @media (min-width: ${({ theme }) => theme.breakPiont.lg}) {
-    margin-top: 8%;
+    margin-top: 20px;
     margin-bottom: 0;
     width: 33.33%;
+    height: 14px;
   }
 
   a {

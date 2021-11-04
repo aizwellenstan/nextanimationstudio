@@ -24,6 +24,7 @@ export const StyleHeader = styled.header`
 export const StyleLogo = styled.div`
   width: 56px;
   margin-left: 12px;
+  margin-top: 10px;
 
   @media (min-width: ${({ theme }) => theme.breakPiont.md}) {
     width: 36px;
