@@ -67,53 +67,49 @@ const StyleTitle = styled.div`
   transform: translateY(-50%);
   z-index: 1;
 
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  text-decoration: none;
+
   @media (min-width: ${({ theme }) => theme.breakPiont.md}) {
     left: -30%;
     top: 50%;
     transform: translateY(-50%);
+
+    flex-direction: column;
+    align-items: flex-start;
   }
 
   @media (min-width: ${({ theme }) => theme.breakPiont.lg}) {
     left: -20%;
   }
 
-  a {
-    display: flex;
-    flex-direction: row;
-    align-items: baseline;
-    text-decoration: none;
+  p {
+    color: #fff;
+    font-size: 24px;
+    font-weight: 600;
+    font-style: italic;
+    letter-spacing: 6px;
+    line-height: 1.4;
 
     @media (min-width: ${({ theme }) => theme.breakPiont.md}) {
-      flex-direction: column;
-      align-items: flex-start;
+      font-size: 36px;
     }
 
-    p {
-      color: #fff;
-      font-size: 24px;
-      font-weight: 600;
-      font-style: italic;
-      letter-spacing: 6px;
-      line-height: 1.4;
-
-      @media (min-width: ${({ theme }) => theme.breakPiont.md}) {
-        font-size: 36px;
-      }
-
-      @media (min-width: ${({ theme }) => theme.breakPiont.lg}) {
-        font-size: 48px;
-      }
+    @media (min-width: ${({ theme }) => theme.breakPiont.lg}) {
+      font-size: 48px;
     }
+  }
 
-    i {
-      display: block;
-      width: 15px;
-      height: 15px;
+  i {
+    display: block;
+    width: 15px;
+    height: 15px;
 
-      @media (min-width: ${({ theme }) => theme.breakPiont.lg}) {
-        width: 30px;
-        height: 30px;
-      }
+    @media (min-width: ${({ theme }) => theme.breakPiont.lg}) {
+      width: 30px;
+      height: 30px;
     }
   }
 `
@@ -132,14 +128,10 @@ export default function OurBusiness({ data }) {
             <a>
               <StyleImage>
                 <StyleTitle>
-                  <Link href={`${path}/ourbusiness/${item.id}`} passHref>
-                    <a>
-                      <p>{item.title}</p>
-                      <i>
-                        <IconArrowRightBottom fill="#15ff93" />
-                      </i>
-                    </a>
-                  </Link>
+                  <p>{item.type}</p>
+                  <i>
+                    <IconArrowRightBottom fill="#15ff93" />
+                  </i>
                 </StyleTitle>
                 <Image src={item.image} alt="" layout="responsive" width={660} height={300} />
               </StyleImage>
@@ -164,7 +156,7 @@ export default function OurBusiness({ data }) {
 }
 
 export const getStaticProps = async () => {
-  const res = await fetch(`${process.env.HOST}/api/getBusiness`)
+  const res = await fetch(`https://nas.api.smartores.com/getBusiness`)
   const data = await res.json()
 
   return {

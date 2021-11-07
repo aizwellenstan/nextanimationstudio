@@ -1,3 +1,4 @@
+import axios from 'axios'
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
@@ -42,6 +43,11 @@ const StyleKv = styled.div`
   position: relative;
   width: 100%;
   padding-bottom: 56.25%;
+
+  .video {
+    background: url(${(props) => props.banner}) no-repeat center center;
+    background-size: cover;
+  }
 
   .video,
   .video > iframe {
@@ -304,7 +310,9 @@ export default function OurVision({ data }) {
   const router = useRouter()
   const language = useLanguage()
   const path = usePath(language)
-  const { video, team, client } = data
+  const { banner, video, team, client } = data
+
+  console.log(banner)
 
   useEffect(() => {
     if (language === LANGUAGE_CN) {
@@ -318,6 +326,13 @@ export default function OurVision({ data }) {
     }
   }, [language, data])
 
+  // useEffect(() => {
+  //   const res = axios
+  //     .get(`https://nas.api.smartores.com/getVision`)
+  //     .then((response) => console.log(response))
+  //     .catch((error) => console.log(error))
+  // }, [])
+
   return (
     <>
       <Container>
@@ -329,7 +344,7 @@ export default function OurVision({ data }) {
         </Title>
         <StyleContent>
           <StyleSection>
-            <StyleKv>
+            <StyleKv banner={banner.url}>
               <div className="bg"></div>
               <div className="video">
                 <iframe

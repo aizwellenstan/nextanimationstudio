@@ -38,6 +38,11 @@ export default function handler(req, res) {
       アニメーションを使用して未来を予測します。
       </p>`,
     },
+    banner: {
+      url: 'https://picsum.photos/id/1023/1280/720',
+      width: 1280,
+      height: 720,
+    },
     video: 'https://www.youtube.com/embed/ZbwBVWnonzA',
     team: [
       {

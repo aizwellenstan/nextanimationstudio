@@ -479,24 +479,27 @@ export default function Home({ data }) {
   const [selectType, setSelectType] = useState('1')
   const [textareaOther, setTextareaOther] = useState('')
   const formData = useRef({})
+  const formDom = useRef(null)
   const router = useRouter()
   const language = useLanguage()
   const path = usePath(language)
 
-  if (router.asPath.includes('?')) {
-    const index = router.asPath.indexOf('?')
-    const path = router.asPath.substring(index + 1)
-    const params = path.split('&')
-    const isContactUs = params.some((item) => item === 'contactus')
-    // console.log(params, isContactUs)
+  useEffect(() => {
+    if (router.asPath.includes('?')) {
+      const index = router.asPath.indexOf('?')
+      const path = router.asPath.substring(index + 1)
+      const params = path.split('&')
+      const isContactUs = params.some((item) => item === 'contactus')
+      const formOffsetY = formDom.current.offsetTop
 
-    if (isContactUs) {
-      window.scrollTo({
-        top: 100,
-        behavior: 'smooth',
-      })
+      if (isContactUs) {
+        window.scrollTo({
+          top: formOffsetY,
+          behavior: 'smooth',
+        })
+      }
     }
-  }
+  }, [])
 
   const tick = () => {
     setDate(new Date())
@@ -681,11 +684,11 @@ export default function Home({ data }) {
                 </div>
               </div>
             </div>
-            <a className="download" href={downloadUrl}>
+            <a className="download" href={downloadUrl} target="_blank" rel="noreferrer">
               Download 公司簡介
             </a>
           </div>
-          <div className="form">
+          <div className="form" ref={formDom}>
             <div className="form-group">
               <label>
                 <span>Name</span>
