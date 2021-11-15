@@ -554,8 +554,9 @@ export default function Home({ data }) {
 
   const handleSubmit = async () => {
     // console.log(formData.current)
-    const res = await axios.post(`https://nas.api.smartores.com/getHome`, formData.current)
+    const res = await axios.post(`https://nas.api.smartores.com/sendContact`, formData.current)
     const data = res.data
+
     console.log(data)
   }
 
@@ -584,10 +585,10 @@ export default function Home({ data }) {
       <ContainerFluid>
         <StyleKv>
           <div className="kv-xs">
-            <Image src={bannerXS.url} alt="" layout="responsive" width={768} height={670} />
+            <Image src={bannerXS.url} alt="" layout="responsive" width={bannerXS.width} height={bannerXS.height} />
           </div>
           <div className="kv-md">
-            <Image src={bannerMD.url} alt="" layout="responsive" width={1920} height={700} />
+            <Image src={bannerMD.url} alt="" layout="responsive" width={bannerMD.width} height={bannerMD.height} />
           </div>
           <div className="content">
             <h2>
@@ -684,9 +685,11 @@ export default function Home({ data }) {
                 </div>
               </div>
             </div>
+            {/* {downloadUrl ? ( */}
             <a className="download" href={downloadUrl} target="_blank" rel="noreferrer">
               Download 公司簡介
             </a>
+            {/* ) : null} */}
           </div>
           <div className="form" ref={formDom}>
             <div className="form-group">
@@ -738,7 +741,7 @@ export default function Home({ data }) {
 }
 
 export const getStaticProps = async () => {
-  const res = await fetch(`https://nas.api.smartores.com/getHome`)
+  const res = await fetch(`${process.env.HOST}/getHome`)
   const data = await res.json()
 
   return {

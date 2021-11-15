@@ -12,12 +12,48 @@ import { SectionText, SectionAlbum, SectionPhoto } from '../../components/Layout
 import { v4 as uuidv4 } from 'uuid'
 
 const StyleBanner = styled.div`
+  position: relative;
+  margin: 0 auto;
   width: 100%;
   max-width: 1500px;
-  margin: 0 auto;
+  overflow: hidden;
+  height: ${(props) => props.height};
+  display: ${(props) => props.display};
+  justify-content: center;
+  align-items: center;
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 0;
+    transform: translateX(-50%);
+    width: 100%;
+    height: 100%;
+
+    @media (min-width: ${({ theme }) => theme.breakPiont.md}) {
+      width: calc(100% - 60px);
+    }
+  }
+
+  &::before {
+    background: url(${(props) => props.banner}) no-repeat center center;
+    background-size: cover;
+  }
+
+  &::after {
+    background-color: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(10px);
+  }
 
   @media (min-width: ${({ theme }) => theme.breakPiont.md}) {
     padding: 0 30px;
+  }
+
+  & > div {
+    position: relative;
+    z-index: 1;
   }
 `
 
@@ -74,9 +110,11 @@ export default function OurUpdatesSubpage({ data }) {
       <Container>
         <Breadcrumb router={router} name={pageData.title} />
       </Container>
-      <StyleBanner>
-        <Image src={pageData.banner} alt="" layout="responsive" width={1440} height={760} />
-      </StyleBanner>
+      {pageData.banner ? (
+        <StyleBanner banner={pageData.banner} height={600} display={400 > 600 ? 'block' : 'flex'}>
+          <Image src={pageData.banner} alt="" layout={400 > 600 ? 'responsive' : 'fixed'} width={400} height={600} />
+        </StyleBanner>
+      ) : null}
       <Container>
         <StyleTitle>{pageData.title}</StyleTitle>
         <StyleMain>

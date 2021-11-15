@@ -1,10 +1,11 @@
 module.exports = {
   // reactStrictMode: true,
   env: {
-    HOST: 'http://localhost:3000',
+    // HOST: 'http://localhost:3000',
+    HOST: 'https://nas.api.smartores.com',
   },
   images: {
-    domains: ['picsum.photos'],
+    domains: ['picsum.photos', 'nas.admin.smartores.com'],
   },
   async rewrites() {
     return [

@@ -1,3 +1,4 @@
+import axios from 'axios'
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -182,16 +183,16 @@ export default function OurWorks({ data }) {
   const filterHandler = async (tag) => {
     console.log('filter', tag)
 
-    const res = await fetch(`${process.env.HOST}/api/getWorks`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        type: tag,
-      }),
-    })
-    const data = await res.json()
+    // const res = await fetch(`${process.env.HOST}/getWork`, {
+    //   // method: 'POST',
+    //   // headers: {
+    //   //   'Content-Type': 'application/json',
+    //   // },
+    //   // body: JSON.stringify({
+    //   //   type: tag,
+    //   // }),
+    // })
+    // const data = await res.json()
 
     if (language === LANGUAGE_CN) {
       setPageData(data.cn)
@@ -285,15 +286,18 @@ export default function OurWorks({ data }) {
 }
 
 export const getStaticProps = async () => {
-  const res = await fetch(`${process.env.HOST}/api/getWorks`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      type: 'all',
-    }),
-  })
+  // const res = await axios.get(`${process.env.HOST}/getWork`)
+  // const data = res.data
+  // const res = await fetch(`${process.env.HOST}/getWork`, {
+  //   method: 'GET',
+  //   headers: {
+  //     'Content-Type': 'application/json',
+  //   },
+  //   body: JSON.stringify({
+  //     type: 'all',
+  //   }),
+  // })
+  const res = await fetch(`${process.env.HOST}/getWork`)
   const data = await res.json()
 
   return {

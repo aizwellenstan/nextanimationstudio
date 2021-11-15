@@ -128,7 +128,7 @@ export default function OurBusiness({ data }) {
             <a>
               <StyleImage>
                 <StyleTitle>
-                  <p>{item.type}</p>
+                  <p>{item.title}</p>
                   <i>
                     <IconArrowRightBottom fill="#15ff93" />
                   </i>
@@ -156,8 +156,10 @@ export default function OurBusiness({ data }) {
 }
 
 export const getStaticProps = async () => {
-  const res = await fetch(`https://nas.api.smartores.com/getBusiness`)
+  const res = await fetch(`${process.env.HOST}/getBusiness`)
   const data = await res.json()
+
+  console.log(data)
 
   return {
     props: {

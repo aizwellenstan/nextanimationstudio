@@ -344,7 +344,8 @@ export default function OurVision({ data }) {
         </Title>
         <StyleContent>
           <StyleSection>
-            <StyleKv banner={banner.url}>
+            {/* <StyleKv banner={banner.url}> */}
+            <StyleKv>
               <div className="bg"></div>
               <div className="video">
                 <iframe
@@ -365,7 +366,7 @@ export default function OurVision({ data }) {
             </StyleKv>
           </StyleSection>
           <StyleSection>
-            <StyleDes dangerouslySetInnerHTML={{ __html: pageData.intro }} />
+            <StyleDes dangerouslySetInnerHTML={{ __html: pageData.intro.value }} />
           </StyleSection>
           <StyleSection>
             <StyleSubtitle>
@@ -470,7 +471,7 @@ export default function OurVision({ data }) {
 }
 
 export const getStaticProps = async () => {
-  const res = await fetch(`${process.env.HOST}/api/getVision`)
+  const res = await fetch(`${process.env.HOST}/getOurVision`)
   const data = await res.json()
 
   return {

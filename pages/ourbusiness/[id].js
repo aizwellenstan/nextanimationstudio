@@ -13,12 +13,48 @@ import { SectionText, SectionAlbum, SectionPhoto } from '../../components/Layout
 import { v4 as uuidv4 } from 'uuid'
 
 const StyleBanner = styled.div`
+  position: relative;
+  margin: 0 auto;
   width: 100%;
   max-width: 1500px;
-  margin: 0 auto;
+  overflow: hidden;
+  height: ${(props) => props.height};
+  display: ${(props) => props.display};
+  justify-content: center;
+  align-items: center;
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 0;
+    transform: translateX(-50%);
+    width: 100%;
+    height: 100%;
+
+    @media (min-width: ${({ theme }) => theme.breakPiont.md}) {
+      width: calc(100% - 60px);
+    }
+  }
+
+  &::before {
+    background: url(${(props) => props.banner}) no-repeat center center;
+    background-size: cover;
+  }
+
+  &::after {
+    background-color: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(10px);
+  }
 
   @media (min-width: ${({ theme }) => theme.breakPiont.md}) {
     padding: 0 30px;
+  }
+
+  & > div {
+    position: relative;
+    z-index: 1;
   }
 `
 
@@ -103,9 +139,11 @@ export default function OurBusinessSubpage({ data }) {
       <Container>
         <Breadcrumb router={router} name={pageData.title} />
       </Container>
-      <StyleBanner>
-        <Image src={pageData.banner} alt="" layout="responsive" width={1440} height={760} />
-      </StyleBanner>
+      {pageData.banner ? (
+        <StyleBanner banner={pageData.banner} height={600} display={400 > 600 ? 'block' : 'flex'}>
+          <Image src={pageData.banner} alt="" layout={400 > 600 ? 'responsive' : 'fixed'} width={400} height={600} />
+        </StyleBanner>
+      ) : null}
       <Container>
         <StyleTitle>{pageData.title}</StyleTitle>
         <StyleLinks>
@@ -119,18 +157,22 @@ export default function OurBusinessSubpage({ data }) {
           </div>
         </StyleLinks>
         <StyleMain>
-          {pageData.section.map((item) => {
-            if (item.type === 'text') {
-              return <SectionText key={uuidv4()} item={item} />
-            }
-            if (item.type === 'album') {
-              return <SectionAlbum key={uuidv4()} item={item} />
-            }
-            if (item.type === 'photo') {
-              return <SectionPhoto key={uuidv4()} item={item} />
-            }
-          })}
-          <Pagination previous={`${path}${pageData.previousPage}`} next={`${path}${pageData.nextPage}`} />
+          {pageData.section
+            ? pageData.section.map((item) => {
+                if (item.type === 'text') {
+                  return <SectionText key={uuidv4()} item={item} />
+                }
+                if (item.type === 'album') {
+                  return <SectionAlbum key={uuidv4()} item={item} />
+                }
+                if (item.type === 'photo') {
+                  return <SectionPhoto key={uuidv4()} item={item} />
+                }
+              })
+            : null}
+          {pageData.previousPage || pageData.nextPage ? (
+            <Pagination previous={`${path}${pageData.previousPage}`} next={`${path}${pageData.nextPage}`} />
+          ) : null}
         </StyleMain>
       </Container>
     </>
@@ -138,7 +180,7 @@ export default function OurBusinessSubpage({ data }) {
 }
 
 export const getStaticPaths = async () => {
-  const res = await fetch(`${process.env.HOST}/api/getBusiness`)
+  const res = await fetch(`${process.env.HOST}/getBusiness`)
   const data = await res.json()
 
   const paths = data.list.map((item) => {
@@ -149,8 +191,6 @@ export const getStaticPaths = async () => {
     }
   })
 
-  console.log(paths)
-
   return {
     paths: paths,
     fallback: false,
@@ -159,10 +199,9 @@ export const getStaticPaths = async () => {
 
 export const getStaticProps = async (context) => {
   const id = context.params.id
-  const res = await fetch(`${process.env.HOST}/api/getBusiness/${id}`)
+  // console.log('props id:', context.params.title)
+  const res = await fetch(`${process.env.HOST}/getBusiness/house`)
   const data = await res.json()
-
-  console.log(context)
 
   return {
     props: {

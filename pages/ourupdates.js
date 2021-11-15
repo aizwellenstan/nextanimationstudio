@@ -185,7 +185,7 @@ export default function OurUpdates({ data }) {
     if (_page > total.current) return
     // console.log(_page, nowYear)
 
-    const res = await fetch(`${process.env.HOST}/api/getUpdates`, {
+    const res = await fetch(`${process.env.HOST}/getUpdate`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -274,10 +274,10 @@ export default function OurUpdates({ data }) {
 }
 
 export const getStaticProps = async () => {
-  const res = await axios.post(`${process.env.HOST}/api/getUpdates`, {
-    page: 1,
-    year: '2021',
-  })
+  // const res = await axios.post(`${process.env.HOST}/getUpdate`, {
+  //   page: 1,
+  //   year: '2021',
+  // })
   // const res = await fetch(`${process.env.HOST}/api/getUpdates`, {
   //   method: 'POST',
   //   headers: {
@@ -288,7 +288,20 @@ export const getStaticProps = async () => {
   //     year: '2021',
   //   }),
   // })
-  const data = res.data
+  const res = await fetch(`${process.env.HOST}/getUpdate`, {
+    // method: 'POST',
+    // headers: {
+    //   'Content-Type': 'application/json',
+    // },
+    // body: JSON.stringify({
+    //   page: 1,
+    //   year: '2021',
+    // }),
+  })
+  const data = await res.json()
+  // const data = await res.data
+
+  console.log(data)
 
   return {
     props: {
