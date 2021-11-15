@@ -1,3 +1,4 @@
+import axios from 'axios'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
@@ -156,10 +157,10 @@ export default function OurBusiness({ data }) {
 }
 
 export const getStaticProps = async () => {
-  const res = await fetch(`${process.env.HOST}/getBusiness`)
-  const data = await res.json()
-
-  console.log(data)
+  const res = await axios.get(`${process.env.HOST}/getBusiness`)
+  const data = res.data
+  // const res = await fetch(`${process.env.HOST}/getBusiness`)
+  // const data = await res.json()
 
   return {
     props: {

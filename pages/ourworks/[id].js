@@ -181,20 +181,22 @@ export default function OurWorksSubpage({ data }) {
           </div>
         </StyleLinks>
         <StyleMain>
-          {pageData.section.map((item) => {
-            if (item.type === 'text') {
-              return <SectionText key={uuidv4()} item={item} />
-            }
-            if (item.type === 'album') {
-              return <SectionAlbum key={uuidv4()} item={item} />
-            }
-            if (item.type === 'photo') {
-              return <SectionPhoto key={uuidv4()} item={item} />
-            }
-            if (item.type === 'team') {
-              return <SectionTeam key={uuidv4()} item={item} />
-            }
-          })}
+          {pageData.section
+            ? pageData.section.map((item) => {
+                if (item.type === 'text') {
+                  return <SectionText key={uuidv4()} item={item} />
+                }
+                if (item.type === 'album') {
+                  return <SectionAlbum key={uuidv4()} item={item} />
+                }
+                if (item.type === 'photo') {
+                  return <SectionPhoto key={uuidv4()} item={item} />
+                }
+                if (item.type === 'team') {
+                  return <SectionTeam key={uuidv4()} item={item} />
+                }
+              })
+            : null}
           <Pagination previous={`${path}${pageData.previousPage}`} next={`${path}${pageData.nextPage}`} />
         </StyleMain>
       </Container>
@@ -203,18 +205,16 @@ export default function OurWorksSubpage({ data }) {
 }
 
 export const getStaticPaths = async () => {
-  const res = await fetch(`${process.env.HOST}/api/getWorks`)
+  const res = await fetch(`${process.env.HOST}/getWork`)
   const data = await res.json()
 
-  const paths = data.en.works.map((item) => {
+  const paths = data.cn.works.map((item) => {
     return {
       params: {
         id: item.id,
       },
     }
   })
-
-  console.log(paths)
 
   return {
     paths: paths,
@@ -224,10 +224,8 @@ export const getStaticPaths = async () => {
 
 export const getStaticProps = async (context) => {
   const id = context.params.id
-  const res = await fetch(`${process.env.HOST}/api/getWorks/${id}`)
+  const res = await fetch(`${process.env.HOST}/getWork/${id}`)
   const data = await res.json()
-
-  console.log(context)
 
   return {
     props: {

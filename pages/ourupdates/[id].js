@@ -118,17 +118,19 @@ export default function OurUpdatesSubpage({ data }) {
       <Container>
         <StyleTitle>{pageData.title}</StyleTitle>
         <StyleMain>
-          {pageData.section.map((item) => {
-            if (item.type === 'text') {
-              return <SectionText key={uuidv4()} item={item} />
-            }
-            if (item.type === 'album') {
-              return <SectionAlbum key={uuidv4()} item={item} />
-            }
-            if (item.type === 'photo') {
-              return <SectionPhoto key={uuidv4()} item={item} />
-            }
-          })}
+          {pageData.section
+            ? pageData.section.map((item) => {
+                if (item.type === 'text') {
+                  return <SectionText key={uuidv4()} item={item} />
+                }
+                if (item.type === 'album') {
+                  return <SectionAlbum key={uuidv4()} item={item} />
+                }
+                if (item.type === 'photo') {
+                  return <SectionPhoto key={uuidv4()} item={item} />
+                }
+              })
+            : null}
           <Pagination previous={`${path}${pageData.previousPage}`} next={`${path}${pageData.nextPage}`} />
         </StyleMain>
       </Container>
@@ -137,18 +139,15 @@ export default function OurUpdatesSubpage({ data }) {
 }
 
 export const getStaticPaths = async () => {
-  const res = await fetch(`${process.env.HOST}/api/getUpdates`)
+  const res = await fetch(`${process.env.HOST}/getUpdate`)
   const data = await res.json()
-
-  const paths = data.en.list.map((item) => {
+  const paths = data.cn.list.map((item) => {
     return {
       params: {
         id: item.id,
       },
     }
   })
-
-  console.log(paths)
 
   return {
     paths: paths,
@@ -158,10 +157,10 @@ export const getStaticPaths = async () => {
 
 export const getStaticProps = async (context) => {
   const id = context.params.id
-  const res = await fetch(`${process.env.HOST}/api/getUpdates/${id}`)
+  const res = await fetch(`${process.env.HOST}/getUpdate/${id}`)
   const data = await res.json()
 
-  console.log(context)
+  console.log(data)
 
   return {
     props: {

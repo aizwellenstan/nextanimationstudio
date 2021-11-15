@@ -183,14 +183,18 @@ export default function OurWorks({ data }) {
   const filterHandler = async (tag) => {
     console.log('filter', tag)
 
+    const res = await axios.get(`${process.env.HOST}/getWork`, {
+      filter: [],
+    })
+    const data = res.data
     // const res = await fetch(`${process.env.HOST}/getWork`, {
-    //   // method: 'POST',
-    //   // headers: {
-    //   //   'Content-Type': 'application/json',
-    //   // },
-    //   // body: JSON.stringify({
-    //   //   type: tag,
-    //   // }),
+    // method: 'POST',
+    // headers: {
+    //   'Content-Type': 'application/json',
+    // },
+    // body: JSON.stringify({
+    //   type: tag,
+    // }),
     // })
     // const data = await res.json()
 
@@ -286,19 +290,8 @@ export default function OurWorks({ data }) {
 }
 
 export const getStaticProps = async () => {
-  // const res = await axios.get(`${process.env.HOST}/getWork`)
-  // const data = res.data
-  // const res = await fetch(`${process.env.HOST}/getWork`, {
-  //   method: 'GET',
-  //   headers: {
-  //     'Content-Type': 'application/json',
-  //   },
-  //   body: JSON.stringify({
-  //     type: 'all',
-  //   }),
-  // })
-  const res = await fetch(`${process.env.HOST}/getWork`)
-  const data = await res.json()
+  const res = await axios.get(`${process.env.HOST}/getWork`)
+  const data = res.data
 
   return {
     props: {

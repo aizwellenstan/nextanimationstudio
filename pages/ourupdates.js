@@ -274,34 +274,8 @@ export default function OurUpdates({ data }) {
 }
 
 export const getStaticProps = async () => {
-  // const res = await axios.post(`${process.env.HOST}/getUpdate`, {
-  //   page: 1,
-  //   year: '2021',
-  // })
-  // const res = await fetch(`${process.env.HOST}/api/getUpdates`, {
-  //   method: 'POST',
-  //   headers: {
-  //     'Content-Type': 'application/json',
-  //   },
-  //   body: JSON.stringify({
-  //     page: 1,
-  //     year: '2021',
-  //   }),
-  // })
-  const res = await fetch(`${process.env.HOST}/getUpdate`, {
-    // method: 'POST',
-    // headers: {
-    //   'Content-Type': 'application/json',
-    // },
-    // body: JSON.stringify({
-    //   page: 1,
-    //   year: '2021',
-    // }),
-  })
-  const data = await res.json()
-  // const data = await res.data
-
-  console.log(data)
+  const res = await axios.get(`${process.env.HOST}/getUpdate`)
+  const data = res.data
 
   return {
     props: {

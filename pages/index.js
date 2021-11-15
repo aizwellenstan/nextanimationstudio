@@ -554,10 +554,14 @@ export default function Home({ data }) {
 
   const handleSubmit = async () => {
     // console.log(formData.current)
-    const res = await axios.post(`https://nas.api.smartores.com/sendContact`, formData.current)
+    const res = await axios.post(`${process.env.HOST}/sendContact`, formData.current)
     const data = res.data
 
-    console.log(data)
+    // console.log(data)
+    if (data.result) {
+      alert('success!')
+      handleClear()
+    }
   }
 
   const handleInputName = (e) => {
@@ -741,8 +745,8 @@ export default function Home({ data }) {
 }
 
 export const getStaticProps = async () => {
-  const res = await fetch(`${process.env.HOST}/getHome`)
-  const data = await res.json()
+  const res = await axios.get(`${process.env.HOST}/getHome`)
+  const data = res.data
 
   return {
     props: {
