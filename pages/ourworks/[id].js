@@ -167,9 +167,11 @@ export default function OurWorksSubpage({ data }) {
         <StyleTitle>{pageData.title}</StyleTitle>
         <StyleLinks>
           <div className="proportion">
-            {pageData.proportion.map((item) => {
-              return <StylePercentage key={item.id} width={item.percentage} color={item.color} />
-            })}
+            {pageData.proportion
+              ? pageData.proportion.map((item) => {
+                  return <StylePercentage key={item.id} width={item.percentage} color={item.color} />
+                })
+              : null}
           </div>
           <div className="link-group">
             <a href={pageData.youtubeLink} target="_blank" rel="noreferrer">
@@ -227,6 +229,7 @@ export const getStaticProps = async (context) => {
   const res = await fetch(`${process.env.HOST}/getWork/${id}`)
   const data = await res.json()
 
+  console.log(data)
   return {
     props: {
       data: data,

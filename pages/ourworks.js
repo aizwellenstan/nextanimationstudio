@@ -163,6 +163,11 @@ const StyleFilter = styled.div`
     margin: 6px 10px 6px 0;
     border-radius: 50px;
     background-color: ${({ theme }) => theme.color.blueGreen};
+    cursor: pointer;
+
+    &.active {
+      background-color: ${({ theme }) => theme.color.gray};
+    }
 
     @media (min-width: ${({ theme }) => theme.breakPiont.lg}) {
       font-size: 16px;
@@ -179,24 +184,27 @@ export default function OurWorks({ data }) {
   const language = useLanguage()
   const path = usePath(language)
   const { type, filter } = data
+  const [filterStatus, setFilterStatus] = useState([])
 
   const filterHandler = async (tag) => {
     console.log('filter', tag)
 
+    const newStatus = [...filterStatus]
+
+    newStatus.map((item) => {
+      return item.tag === tag ? (item.status ? (item.status = false) : (item.status = true)) : null
+    })
+
+    setFilterStatus(newStatus)
+
+    const newFilter = newStatus.filter((item) => {
+      return item.status
+    })
+
     const res = await axios.get(`${process.env.HOST}/getWork`, {
-      filter: [],
+      filter: newFilter,
     })
     const data = res.data
-    // const res = await fetch(`${process.env.HOST}/getWork`, {
-    // method: 'POST',
-    // headers: {
-    //   'Content-Type': 'application/json',
-    // },
-    // body: JSON.stringify({
-    //   type: tag,
-    // }),
-    // })
-    // const data = await res.json()
 
     if (language === LANGUAGE_CN) {
       setPageData(data.cn)
@@ -207,7 +215,6 @@ export default function OurWorks({ data }) {
     if (language === LANGUAGE_EN) {
       setPageData(data.en)
     }
-    console.log(pageData)
   }
 
   useEffect(() => {
@@ -220,6 +227,8 @@ export default function OurWorks({ data }) {
     if (language === LANGUAGE_EN) {
       setPageData(data.en)
     }
+
+    setFilterStatus(filter)
   }, [language, data])
 
   return (
@@ -251,7 +260,7 @@ export default function OurWorks({ data }) {
           <StyleFilter>
             {filter.map((item) => {
               return (
-                <div key={item.id} onClick={() => filterHandler(item.tag)}>
+                <div key={item.id} className={item.status ? 'active' : null} onClick={() => filterHandler(item.tag)}>
                   {item.tag}
                 </div>
               )
@@ -291,7 +300,10 @@ export default function OurWorks({ data }) {
 
 export const getStaticProps = async () => {
   const res = await axios.get(`${process.env.HOST}/getWork`)
+  // const res = await axios.get(`http://localhost:3000/api/getWorks`)
   const data = res.data
+
+  console.log(data)
 
   return {
     props: {
