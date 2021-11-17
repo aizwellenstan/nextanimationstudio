@@ -134,7 +134,13 @@ export default function OurBusiness({ data }) {
                     <IconArrowRightBottom fill="#15ff93" />
                   </i>
                 </StyleTitle>
-                <Image src={item.image} alt="" layout="responsive" width={660} height={300} />
+                <Image
+                  src={item.image.url}
+                  alt=""
+                  layout="responsive"
+                  width={item.image.width}
+                  height={item.image.height}
+                />
               </StyleImage>
             </a>
           </Link>
@@ -161,6 +167,8 @@ export const getStaticProps = async () => {
   const data = res.data
   // const res = await fetch(`${process.env.HOST}/getBusiness`)
   // const data = await res.json()
+
+  console.log(data)
 
   return {
     props: {
