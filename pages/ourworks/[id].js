@@ -161,8 +161,14 @@ export default function OurWorksSubpage({ data }) {
         <Breadcrumb router={router} name={pageData.title} />
       </Container>
       {pageData.banner ? (
-        <StyleBanner banner={pageData.banner} height={600} display={400 > 600 ? 'block' : 'flex'}>
-          <Image src={pageData.banner} alt="" layout={400 > 600 ? 'responsive' : 'fixed'} width={400} height={600} />
+        <StyleBanner banner={pageData.banner.url} height={600} display={400 > 600 ? 'block' : 'flex'}>
+          <Image
+            src={pageData.banner.url}
+            alt=""
+            layout={400 > 600 ? 'responsive' : 'fixed'}
+            width={400}
+            height={600}
+          />
         </StyleBanner>
       ) : null}
       <Container>
@@ -229,6 +235,8 @@ export const getStaticProps = async (context) => {
   const id = context.params.id
   const res = await fetch(`${process.env.HOST}/getWork/${id}`)
   const data = await res.json()
+
+  console.log(data)
 
   return {
     props: {
