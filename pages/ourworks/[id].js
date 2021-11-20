@@ -141,6 +141,8 @@ export default function OurWorksSubpage({ data }) {
   const language = useLanguage()
   const path = usePath(language)
 
+  console.log(data.en)
+
   useEffect(() => {
     if (language === LANGUAGE_CN) {
       setPageData(data.cn)
@@ -209,8 +211,7 @@ export default function OurWorksSubpage({ data }) {
 export const getStaticPaths = async () => {
   const res = await fetch(`${process.env.HOST}/getWork`)
   const data = await res.json()
-
-  const paths = data.cn.works.map((item) => {
+  const paths = data.en.works.map((item) => {
     return {
       params: {
         id: item.id,
@@ -229,10 +230,10 @@ export const getStaticProps = async (context) => {
   const res = await fetch(`${process.env.HOST}/getWork/${id}`)
   const data = await res.json()
 
-  console.log(data)
   return {
     props: {
       data: data,
     },
+    revalidate: 10,
   }
 }

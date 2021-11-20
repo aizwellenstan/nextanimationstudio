@@ -748,6 +748,8 @@ export const getStaticProps = async () => {
   const res = await axios.get(`${process.env.HOST}/getHome`)
   const data = res.data
 
+  console.log(data)
+
   return {
     props: {
       data: data,

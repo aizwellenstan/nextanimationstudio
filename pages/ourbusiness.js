@@ -168,7 +168,7 @@ export const getStaticProps = async () => {
   // const res = await fetch(`${process.env.HOST}/getBusiness`)
   // const data = await res.json()
 
-  console.log(data)
+  console.log('business', data)
 
   return {
     props: {
