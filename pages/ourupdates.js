@@ -227,7 +227,7 @@ export default function OurUpdates({ data }) {
             hasMore={true || false}
             loader={
               <div className="loader" key={0}>
-                Loading ...
+                {page.current !== pageData.totalPage ? 'Loading ...' : ''}
               </div>
             }
           >
