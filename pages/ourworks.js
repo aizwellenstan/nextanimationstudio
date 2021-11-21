@@ -201,10 +201,12 @@ export default function OurWorks({ data }) {
       return item.status
     })
 
-    const res = await axios.get(`${process.env.HOST}/getWork`, {
+    const res = await axios.post(`${process.env.HOST}/getWork`, {
       filter: newFilter,
     })
     const data = res.data
+
+    // console.log('get work filter:', newFilter, data)
 
     if (language === LANGUAGE_CN) {
       setPageData(data.cn)

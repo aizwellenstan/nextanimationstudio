@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { v4 as uuidv4 } from 'uuid'
 
 const StyleText = styled.section`
-  h2 {
+  h1 {
     font-size: 28px;
     font-weight: 600;
     color: ${({ theme }) => theme.color.primary};
@@ -33,27 +33,33 @@ const StylePhoto = styled.section`
 
   &.wrap {
     figure {
-      flex: 1 0 100%;
+      /* flex: 1 0 100%; */
+      width: 100%;
 
       @media (min-width: ${({ theme }) => theme.breakPiont.md}) {
-        flex: 0 1 50%;
+        /* flex: 0 1 50%; */
+        width: 50%;
       }
 
       @media (min-width: ${({ theme }) => theme.breakPiont.lg}) {
-        flex: 0 1 33.33%;
+        /* flex: 0 1 33.33%; */
+        width: 33.33%;
       }
     }
   }
 
   figure {
-    flex: 1 0 100%;
+    /* flex: 1 0 100%; */
+    width: 100%;
     margin-bottom: 6%;
 
     @media (min-width: ${({ theme }) => theme.breakPiont.md}) {
-      flex: 0 1 50%;
+      /* flex: 0 1 50%; */
+      width: 50%;
     }
     @media (min-width: ${({ theme }) => theme.breakPiont.lg}) {
-      flex: 1 0 auto;
+      /* flex: 1 0 auto; */
+      /* width: auto; */
     }
 
     figcaption {
@@ -169,7 +175,7 @@ export const SectionPhoto = ({ item }) => {
       {item.content.map((photo) => {
         return (
           <figure key={photo.id}>
-            <Image src={photo.url} alt="" layout="responsive" width={540} height={360} />
+            <Image src={photo.url} alt="" layout="responsive" width={photo.width} height={photo.height} />
             <figcaption>{photo.description}</figcaption>
           </figure>
         )
@@ -184,7 +190,7 @@ export const SectionAlbum = ({ item }) => {
       {item.content.map((photo) => {
         return (
           <figure key={photo.id}>
-            <Image src={photo.url} alt="" layout="responsive" width={540} height={360} />
+            <Image src={photo.url} alt="" layout="responsive" width={photo.width} height={photo.height} />
           </figure>
         )
       })}
