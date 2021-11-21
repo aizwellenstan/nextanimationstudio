@@ -300,7 +300,6 @@ export default function OurWorks({ data }) {
 
 export const getStaticProps = async () => {
   const res = await axios.get(`${process.env.HOST}/getWork`)
-  // const res = await axios.get(`http://localhost:3000/api/getWorks`)
   const data = res.data
 
   console.log(data)

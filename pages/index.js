@@ -765,5 +765,6 @@ export const getStaticProps = async () => {
       data: data,
       contactData: contactData,
     },
+    revalidate: 10,
   }
 }

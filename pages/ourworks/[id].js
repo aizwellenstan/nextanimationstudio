@@ -218,6 +218,7 @@ export default function OurWorksSubpage({ data }) {
 export const getStaticPaths = async () => {
   const res = await fetch(`${process.env.HOST}/getWork`)
   const data = await res.json()
+
   const paths = data.en.works.map((item) => {
     return {
       params: {
@@ -243,6 +244,6 @@ export const getStaticProps = async (context) => {
     props: {
       data: data,
     },
-    // revalidate: 10,
+    revalidate: 10,
   }
 }
