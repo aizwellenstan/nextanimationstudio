@@ -139,8 +139,7 @@ const StyleItem = styled.div`
 `
 
 export default function OurUpdates({ data }) {
-  const { year, totalPage } = data
-  const total = useRef(totalPage)
+  const { year } = data
   const page = useRef(1)
   const [nowYear, setNowYear] = useState(year[0].text)
   const orgData = useRef()
@@ -166,36 +165,24 @@ export default function OurUpdates({ data }) {
     setNowYear(year)
     page.current = 1
 
-    const res = await fetch(`${process.env.HOST}/api/getUpdates`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        year: year,
-      }),
+    const res = await axios.get(`${process.env.HOST}/getUpdate`, {
+      year: year,
     })
-    const data = await res.json()
+    const data = res.data
 
     orgData.current = data
     handlePageData(orgData.current)
   }
 
   const handleFetch = async (_page) => {
-    if (_page > total.current) return
-    // console.log(_page, nowYear)
+    if (_page > pageData.totalPage) return
+    console.log(_page, nowYear)
 
-    const res = await fetch(`${process.env.HOST}/getUpdate`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        page: _page,
-        year: nowYear,
-      }),
+    const res = await axios.get(`${process.env.HOST}/getUpdate`, {
+      page: _page,
+      year: nowYear,
     })
-    const data = await res.json()
+    const data = res.data
 
     page.current = _page
     orgData.current = data
@@ -249,7 +236,13 @@ export default function OurUpdates({ data }) {
                 <StyleItem key={item.id}>
                   <Link href={`${path}/ourupdates/${item.id}`} passHref>
                     <a>
-                      <Image src={item.image} alt="" layout="responsive" width={660} height={180} />
+                      <Image
+                        src={item.image.url}
+                        alt=""
+                        layout="responsive"
+                        width={item.image.width}
+                        height={item.image.height}
+                      />
                       <p className="date">
                         <span className="year">{item.date.year}</span>
                         <span className="month">{item.date.month}</span>
@@ -276,6 +269,8 @@ export default function OurUpdates({ data }) {
 export const getStaticProps = async () => {
   const res = await axios.get(`${process.env.HOST}/getUpdate`)
   const data = res.data
+
+  console.log(data)
 
   return {
     props: {

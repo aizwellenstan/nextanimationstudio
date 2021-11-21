@@ -279,22 +279,23 @@ const StyleLogoList = styled.div`
 
 const StyleLogo = styled.div`
   position: relative;
-  width: calc(${({ width }) => width / 5}px);
+  width: calc(${({ width }) => width / 6}px);
 
   @media (min-width: ${({ theme }) => theme.breakPiont.sm}) {
     width: calc(${({ width }) => width / 4}px);
   }
 
   @media (min-width: ${({ theme }) => theme.breakPiont.md}) {
-    width: calc(${({ width }) => width / 3}px);
+    width: calc(${({ width }) => width / 4}px);
   }
 
   @media (min-width: ${({ theme }) => theme.breakPiont.lg}) {
-    width: calc(${({ width }) => width / 2}px);
+    width: calc(${({ width }) => width / 3}px);
   }
 
   @media (min-width: ${({ theme }) => theme.breakPiont.xl}) {
-    width: ${({ width }) => width}px;
+    /* width: ${({ width }) => width}px; */
+    width: calc(${({ width }) => width / 3}px);
   }
 
   margin: 6px;
@@ -310,9 +311,7 @@ export default function OurVision({ data }) {
   const router = useRouter()
   const language = useLanguage()
   const path = usePath(language)
-  const { banner, video, team, client } = data
-
-  console.log(banner)
+  const { image, video, team, client } = data
 
   useEffect(() => {
     if (language === LANGUAGE_CN) {
@@ -326,13 +325,6 @@ export default function OurVision({ data }) {
     }
   }, [language, data])
 
-  // useEffect(() => {
-  //   const res = axios
-  //     .get(`https://nas.api.smartores.com/getVision`)
-  //     .then((response) => console.log(response))
-  //     .catch((error) => console.log(error))
-  // }, [])
-
   return (
     <>
       <Container>
@@ -344,19 +336,20 @@ export default function OurVision({ data }) {
         </Title>
         <StyleContent>
           <StyleSection>
-            {/* <StyleKv banner={banner.url}> */}
-            <StyleKv>
+            <StyleKv banner={image.url}>
               <div className="bg"></div>
               <div className="video">
-                <iframe
-                  width="560"
-                  height="315"
-                  src={video}
-                  title="YouTube video player"
-                  frameBorder="0"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                ></iframe>
+                {video ? (
+                  <iframe
+                    width="560"
+                    height="315"
+                    src={`https://www.youtube.com/embed/${video}`}
+                    title="YouTube video player"
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  ></iframe>
+                ) : null}
               </div>
               <p className="title">
                 Envision The Future With
@@ -473,6 +466,8 @@ export default function OurVision({ data }) {
 export const getStaticProps = async () => {
   const res = await fetch(`${process.env.HOST}/getOurVision`)
   const data = await res.json()
+
+  console.log('our visition:', data)
 
   return {
     props: {

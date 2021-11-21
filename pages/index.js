@@ -58,6 +58,10 @@ const StyleKv = styled.div`
       @media (min-width: ${({ theme }) => theme.breakPiont.xl}) {
         font-size: 70px;
       }
+
+      span {
+        color: ${({ theme }) => theme.color.primary};
+      }
     }
 
     .des {
@@ -469,7 +473,7 @@ const StyleFindUs = styled.div`
   }
 `
 
-export default function Home({ data }) {
+export default function Home({ data, contactData }) {
   const [date, setDate] = useState(new Date())
   const [pageData, setPageData] = useState(data.en)
   const { bannerXS, bannerMD, downloadUrl } = data
@@ -478,6 +482,7 @@ export default function Home({ data }) {
   const [inputEmail, setInputEmail] = useState('')
   const [selectType, setSelectType] = useState('1')
   const [textareaOther, setTextareaOther] = useState('')
+  const [address, setAddress] = useState('')
   const formData = useRef({})
   const formDom = useRef(null)
   const router = useRouter()
@@ -525,25 +530,17 @@ export default function Home({ data }) {
   useEffect(() => {
     if (language === LANGUAGE_CN) {
       setPageData(data.cn)
+      setAddress('台北市內湖區新湖三路268號4F')
     }
     if (language === LANGUAGE_JP) {
       setPageData(data.jp)
+      setAddress('4F, No. 268, Xinhu 3rd Road, Neihu, Taipei 11494, Taiwan (R.O.C.)')
     }
     if (language === LANGUAGE_EN) {
       setPageData(data.en)
+      setAddress('4F, No. 268, Xinhu 3rd Road, Neihu, Taipei 11494, Taiwan (R.O.C.)')
     }
   }, [language, data])
-
-  // useEffect(() => {
-  //   // console.log('test!')
-  //   // const res = axios.get(`https://nas.api.smartores.com/getHome`)
-  //   // https://jsonplaceholder.typicode.com/todos/1
-  //   // https://data.epa.gov.tw/api/v1/aqx_p_432?limit=1000&api_key=9be7b239-557b-4c10-9775-78cadfc555e9&format=json
-  //   const res = axios
-  //     .get(`https://nas.api.smartores.com/getHome`)
-  //     .then((response) => console.log(response))
-  //     .catch((error) => console.log(error))
-  // }, [])
 
   const handleClear = () => {
     setInputName('')
@@ -553,14 +550,17 @@ export default function Home({ data }) {
   }
 
   const handleSubmit = async () => {
-    // console.log(formData.current)
+    console.log(formData.current)
     const res = await axios.post(`${process.env.HOST}/sendContact`, formData.current)
     const data = res.data
 
-    // console.log(data)
+    console.log(data)
+
     if (data.result) {
       alert('success!')
       handleClear()
+    } else {
+      alert('fail')
     }
   }
 
@@ -596,9 +596,9 @@ export default function Home({ data }) {
           </div>
           <div className="content">
             <h2>
-              Next second <br />
-              Anything may <br />
-              be the evolution
+              <span>Next</span> second <br />
+              <span>An</span>yth<span>i</span>ng <span>ma</span>y <br />
+              be the evolut<span>ion</span>
             </h2>
             <div className="des">
               <p className="time" suppressHydrationWarning>
@@ -679,7 +679,7 @@ export default function Home({ data }) {
                   <i>
                     <IconLocation fill="#fff" />
                   </i>
-                  台灣台北市內湖區新湖三路268號4樓
+                  {address}
                 </div>
                 <div className="info">
                   <i>
@@ -691,7 +691,7 @@ export default function Home({ data }) {
             </div>
             {/* {downloadUrl ? ( */}
             <a className="download" href={downloadUrl} target="_blank" rel="noreferrer">
-              Download 公司簡介
+              Download NAS Profile
             </a>
             {/* ) : null} */}
           </div>
@@ -717,9 +717,16 @@ export default function Home({ data }) {
             <div className="form-group">
               <label>
                 <span>Type</span>
-                <select name="type" onChange={handleSelectType}>
-                  <option value="1">1</option>
-                  <option value="2">2</option>
+                <select name="type" onChange={handleSelectType} value={selectType}>
+                  {contactData.list.map((item) => {
+                    return (
+                      <option key={item.id} value={item.id}>
+                        {item.type}
+                      </option>
+                    )
+                  })}
+                  {/* <option value="1">1</option>
+                  <option value="2">2</option> */}
                 </select>
               </label>
             </div>
@@ -748,11 +755,15 @@ export const getStaticProps = async () => {
   const res = await axios.get(`${process.env.HOST}/getHome`)
   const data = res.data
 
-  console.log(data)
+  const contactRes = await axios.get(`${process.env.HOST}/getContact`)
+  const contactData = contactRes.data
+
+  console.log(data, contactData)
 
   return {
     props: {
       data: data,
+      contactData: contactData,
     },
   }
 }

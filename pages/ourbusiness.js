@@ -1,10 +1,12 @@
 import axios from 'axios'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
 import styled from 'styled-components'
 import useLanguage from '../hooks/useLanguage'
 import usePath from '../hooks/usePath'
+import { LANGUAGE_CN, LANGUAGE_JP, LANGUAGE_EN } from '../utils/type'
 import { Container } from '../components/Layout/Wrapper'
 import Breadcrumb from '../components/Layout/Breadcrumb'
 import Title from '../components/Layout/Title'
@@ -116,13 +118,25 @@ const StyleTitle = styled.div`
 `
 
 export default function OurBusiness({ data }) {
+  const [pageData, setPageData] = useState(data.en)
   const router = useRouter()
   const language = useLanguage()
   const path = usePath(language)
-  const { list } = data
+
+  useEffect(() => {
+    if (language === LANGUAGE_CN) {
+      setPageData(data.cn)
+    }
+    if (language === LANGUAGE_JP) {
+      setPageData(data.jp)
+    }
+    if (language === LANGUAGE_EN) {
+      setPageData(data.en)
+    }
+  }, [language, data])
 
   const Item = () => {
-    return list.map((item) => {
+    return pageData.list.map((item) => {
       return (
         <StyleItem key={item.id}>
           <Link href={`${path}/ourbusiness/${item.id}`} passHref>
@@ -163,10 +177,8 @@ export default function OurBusiness({ data }) {
 }
 
 export const getStaticProps = async () => {
-  const res = await axios.get(`${process.env.HOST}/getBusiness`)
+  const res = await axios.get(`${process.env.HOST}/getOurBusiness`)
   const data = res.data
-  // const res = await fetch(`${process.env.HOST}/getBusiness`)
-  // const data = await res.json()
 
   console.log('business', data)
 

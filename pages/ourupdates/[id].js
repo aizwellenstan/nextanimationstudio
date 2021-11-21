@@ -17,10 +17,11 @@ const StyleBanner = styled.div`
   width: 100%;
   max-width: 1500px;
   overflow: hidden;
-  height: ${(props) => props.height};
-  display: ${(props) => props.display};
-  justify-content: center;
-  align-items: center;
+  height: 300px;
+
+  @media (min-width: ${({ theme }) => theme.breakPiont.md}) {
+    height: 600px;
+  }
 
   &::before,
   &::after {
@@ -52,8 +53,14 @@ const StyleBanner = styled.div`
   }
 
   & > div {
-    position: relative;
+    position: absolute;
+    width: 100%;
     z-index: 1;
+
+    @media (min-width: ${({ theme }) => theme.breakPiont.md}) {
+      transform: translateX(30px);
+      width: calc(100% - 60px);
+    }
   }
 `
 
@@ -111,8 +118,8 @@ export default function OurUpdatesSubpage({ data }) {
         <Breadcrumb router={router} name={pageData.title} />
       </Container>
       {pageData.banner ? (
-        <StyleBanner banner={pageData.banner} height={600} display={400 > 600 ? 'block' : 'flex'}>
-          <Image src={pageData.banner} alt="" layout={400 > 600 ? 'responsive' : 'fixed'} width={400} height={600} />
+        <StyleBanner banner={pageData.banner.url}>
+          <Image src={pageData.banner.url} alt="" layout="fill" objectFit="contain" />
         </StyleBanner>
       ) : null}
       <Container>
@@ -141,7 +148,7 @@ export default function OurUpdatesSubpage({ data }) {
 export const getStaticPaths = async () => {
   const res = await fetch(`${process.env.HOST}/getUpdate`)
   const data = await res.json()
-  const paths = data.cn.list.map((item) => {
+  const paths = data.en.list.map((item) => {
     return {
       params: {
         id: item.id,

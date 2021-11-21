@@ -2,6 +2,8 @@ import React from 'react'
 import styled from 'styled-components'
 
 const StyleContainer = styled.div`
+  position: relative;
+  z-index: 1;
   width: 100%;
   max-width: 1500px;
   margin: 0 auto;

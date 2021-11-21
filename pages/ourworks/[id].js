@@ -18,10 +18,11 @@ const StyleBanner = styled.div`
   width: 100%;
   max-width: 1500px;
   overflow: hidden;
-  height: ${(props) => props.height};
-  display: ${(props) => props.display};
-  justify-content: center;
-  align-items: center;
+  height: 300px;
+
+  @media (min-width: ${({ theme }) => theme.breakPiont.md}) {
+    height: 600px;
+  }
 
   &::before,
   &::after {
@@ -53,8 +54,14 @@ const StyleBanner = styled.div`
   }
 
   & > div {
-    position: relative;
+    position: absolute;
+    width: 100%;
     z-index: 1;
+
+    @media (min-width: ${({ theme }) => theme.breakPiont.md}) {
+      transform: translateX(30px);
+      width: calc(100% - 60px);
+    }
   }
 `
 
@@ -161,14 +168,8 @@ export default function OurWorksSubpage({ data }) {
         <Breadcrumb router={router} name={pageData.title} />
       </Container>
       {pageData.banner ? (
-        <StyleBanner banner={pageData.banner.url} height={600} display={400 > 600 ? 'block' : 'flex'}>
-          <Image
-            src={pageData.banner.url}
-            alt=""
-            layout={400 > 600 ? 'responsive' : 'fixed'}
-            width={400}
-            height={600}
-          />
+        <StyleBanner banner={pageData.banner.url}>
+          <Image src={pageData.banner.url} alt="" layout="fill" objectFit="contain" />
         </StyleBanner>
       ) : null}
       <Container>
@@ -242,6 +243,6 @@ export const getStaticProps = async (context) => {
     props: {
       data: data,
     },
-    revalidate: 10,
+    // revalidate: 10,
   }
 }
