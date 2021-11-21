@@ -177,7 +177,7 @@ export default function OurBusiness({ data }) {
 }
 
 export const getStaticProps = async () => {
-  const res = await axios.get(`${process.env.HOST}/getOurBusiness`)
+  const res = await axios.get(`${process.env.HOST}/getBusiness`)
   const data = res.data
 
   console.log('business', data)

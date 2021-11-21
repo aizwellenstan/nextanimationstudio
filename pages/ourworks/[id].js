@@ -208,7 +208,9 @@ export default function OurWorksSubpage({ data }) {
                 }
               })
             : null}
-          <Pagination previous={`${path}${pageData.previousPage}`} next={`${path}${pageData.nextPage}`} />
+          {pageData.previousPage || pageData.nextPage ? (
+            <Pagination previous={`${path}${pageData.previousPage}`} next={`${path}${pageData.nextPage}`} />
+          ) : null}
         </StyleMain>
       </Container>
     </>
@@ -218,7 +220,6 @@ export default function OurWorksSubpage({ data }) {
 export const getStaticPaths = async () => {
   const res = await fetch(`${process.env.HOST}/getWork`)
   const data = await res.json()
-
   const paths = data.en.works.map((item) => {
     return {
       params: {

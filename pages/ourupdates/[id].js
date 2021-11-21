@@ -138,7 +138,9 @@ export default function OurUpdatesSubpage({ data }) {
                 }
               })
             : null}
-          <Pagination previous={`${path}${pageData.previousPage}`} next={`${path}${pageData.nextPage}`} />
+          {pageData.previousPage || pageData.nextPage ? (
+            <Pagination previous={`${path}${pageData.previousPage}`} next={`${path}${pageData.nextPage}`} />
+          ) : null}
         </StyleMain>
       </Container>
     </>

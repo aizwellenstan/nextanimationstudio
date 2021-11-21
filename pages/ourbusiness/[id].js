@@ -189,7 +189,7 @@ export default function OurBusinessSubpage({ data }) {
 export const getStaticPaths = async () => {
   const res = await fetch(`${process.env.HOST}/getBusiness`)
   const data = await res.json()
-  const paths = data.list.map((item) => {
+  const paths = data.en.list.map((item) => {
     return {
       params: {
         id: item.id,
