@@ -313,6 +313,8 @@ export default function OurVision({ data }) {
   const path = usePath(language)
   const { image, video, team, client } = data
 
+  console.log('vision:', data)
+
   useEffect(() => {
     if (language === LANGUAGE_CN) {
       setPageData(data.cn)

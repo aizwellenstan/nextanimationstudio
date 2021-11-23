@@ -189,7 +189,10 @@ export default function OurBusinessSubpage({ data }) {
 export const getStaticPaths = async () => {
   const res = await fetch(`${process.env.HOST}/getBusiness`)
   const data = await res.json()
+
+  // console.log('path', data)
   const paths = data.en.list.map((item) => {
+    // console.log(item.id)
     return {
       params: {
         id: item.id,
@@ -199,7 +202,7 @@ export const getStaticPaths = async () => {
 
   return {
     paths: paths,
-    fallback: false,
+    fallback: true,
   }
 }
 
