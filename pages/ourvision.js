@@ -132,11 +132,15 @@ const StyleDes = styled.div`
 
 const StyleTeam = styled.div`
   display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
+  flex-direction: column;
   margin-top: 60px;
 
+  @media (min-width: ${({ theme }) => theme.breakPiont.lg}) {
+    flex-direction: row;
+  }
+
   h3 {
+    width: 100%;
     font-size: 20px;
     font-weight: 600;
     font-style: italic;
@@ -144,6 +148,7 @@ const StyleTeam = styled.div`
     text-transform: uppercase;
 
     @media (min-width: ${({ theme }) => theme.breakPiont.md}) {
+      width: 24%;
       font-size: 24px;
     }
   }
@@ -154,18 +159,18 @@ const StyleTeam = styled.div`
     margin-left: -12px;
     margin-right: -12px;
 
-    @media (min-width: ${({ theme }) => theme.breakPiont.lg}) {
-      width: 80%;
+    @media (min-width: ${({ theme }) => theme.breakPiont.md}) {
+      width: 76%;
     }
   }
 `
 
 const StyleMember = styled.div`
-  flex: 0 1 50%;
+  width: 50%;
   padding: 12px;
 
   @media (min-width: ${({ theme }) => theme.breakPiont.md}) {
-    flex: 0 1 33.33%;
+    width: 33.33%;
   }
 
   .name {
@@ -453,7 +458,7 @@ export default function OurVision({ data }) {
               return (
                 <StyleLogo key={item.id} width={item.image.width} height={item.image.height}>
                   <div className="logo">
-                    <Image src={item.image.url} alt="" layout="fill" objectFit="cover" />
+                    <Image src={item.image.url} alt="" layout="fill" objectFit="contain" />
                   </div>
                 </StyleLogo>
               )

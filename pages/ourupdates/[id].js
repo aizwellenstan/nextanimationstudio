@@ -96,14 +96,7 @@ const StyleMain = styled.div`
 
 export default function OurUpdatesSubpage({ data }) {
   const router = useRouter()
-
-  // if (router.isFallback) {
-  //   return <div>Loading...</div>
-  // }
-  // If the page is not yet generated, this will be displayed
-  // initially until getStaticProps() finishes running
-
-  const [pageData, setPageData] = useState(data.en)
+  const [pageData, setPageData] = useState(data ? data.en : null)
   const language = useLanguage()
   const path = usePath(language)
 
@@ -118,6 +111,10 @@ export default function OurUpdatesSubpage({ data }) {
       setPageData(data.en)
     }
   }, [language, data])
+
+  if (router.isFallback) {
+    return <div>Loading...</div>
+  }
 
   return (
     <>
@@ -167,7 +164,7 @@ export const getStaticPaths = async () => {
 
   return {
     paths: paths,
-    fallback: false,
+    fallback: true,
   }
 }
 

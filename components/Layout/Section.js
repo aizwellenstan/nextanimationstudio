@@ -25,6 +25,23 @@ const StyleText = styled.section`
       margin-bottom: 6%;
     }
   }
+
+  ol,
+  ul {
+    padding-left: 20px;
+
+    li {
+      opacity: 0.6;
+    }
+  }
+
+  ol {
+    list-style: decimal;
+  }
+
+  ul {
+    list-style: disc;
+  }
 `
 
 const StylePhoto = styled.section`

@@ -124,7 +124,7 @@ const StyleMain = styled.div`
 `
 
 export default function OurBusinessSubpage({ data }) {
-  const [pageData, setPageData] = useState(data.en)
+  const [pageData, setPageData] = useState(data ? data.en : null)
   const router = useRouter()
   const language = useLanguage()
   const path = usePath(language)
@@ -140,6 +140,10 @@ export default function OurBusinessSubpage({ data }) {
       setPageData(data.en)
     }
   }, [language, data])
+
+  if (router.isFallback) {
+    return <div>Loading...</div>
+  }
 
   return (
     <>
@@ -189,10 +193,7 @@ export default function OurBusinessSubpage({ data }) {
 export const getStaticPaths = async () => {
   const res = await fetch(`${process.env.HOST}/getBusiness`)
   const data = await res.json()
-
-  // console.log('path', data)
   const paths = data.en.list.map((item) => {
-    // console.log(item.id)
     return {
       params: {
         id: item.id,
@@ -202,7 +203,7 @@ export const getStaticPaths = async () => {
 
   return {
     paths: paths,
-    fallback: false,
+    fallback: true,
   }
 }
 
