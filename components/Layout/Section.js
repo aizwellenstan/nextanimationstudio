@@ -24,6 +24,14 @@ const StyleText = styled.section`
       font-size: 16px;
       margin-bottom: 6%;
     }
+
+    & + ul {
+      margin-top: -12%;
+
+      @media (min-width: ${({ theme }) => theme.breakPiont.lg}) {
+        margin-top: -6%;
+      }
+    }
   }
 
   ol,
