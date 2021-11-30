@@ -29,6 +29,15 @@ const StyleKv = styled.div`
     }
   }
 
+  .video > iframe {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+
   .content {
     position: absolute;
     left: 50%;
@@ -38,6 +47,7 @@ const StyleKv = styled.div`
     height: 100%;
     transform: translate(-50%, -50%);
     padding: 0 30px;
+    pointer-events: none;
 
     h2 {
       font-size: 30px;
@@ -476,7 +486,7 @@ const StyleFindUs = styled.div`
 export default function Home({ data, contactData }) {
   const [date, setDate] = useState(new Date())
   const [pageData, setPageData] = useState(data.en)
-  const { bannerXS, bannerMD, downloadUrl } = data
+  const { bannerXS, bannerMD, downloadUrl, video } = data
   const [inputName, setInputName] = useState('')
   const [inputPhone, setInputPhone] = useState('')
   const [inputEmail, setInputEmail] = useState('')
@@ -593,6 +603,19 @@ export default function Home({ data, contactData }) {
           </div>
           <div className="kv-md">
             <Image src={bannerMD.url} alt="" layout="responsive" width={bannerMD.width} height={bannerMD.height} />
+          </div>
+          <div className="video">
+            {video ? (
+              <iframe
+                width="560"
+                height="315"
+                src={`https://www.youtube.com/embed/${video.url}`}
+                title="YouTube video player"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              ></iframe>
+            ) : null}
           </div>
           <div className="content">
             <h2>
