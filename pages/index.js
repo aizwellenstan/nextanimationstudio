@@ -9,6 +9,7 @@ import usePath from '../hooks/usePath'
 import { LANGUAGE_CN, LANGUAGE_JP, LANGUAGE_EN } from '../utils/type'
 import { Container, ContainerFluid } from '../components/Layout/Wrapper'
 import { IconArrowRightBottom, IconLocation, IconPhone } from '../components/Icons'
+import YouTube from '@u-wave/react-youtube'
 
 const StyleKv = styled.div`
   margin-top: 60px;
@@ -47,7 +48,7 @@ const StyleKv = styled.div`
     height: 100%;
     transform: translate(-50%, -50%);
     padding: 0 30px;
-    pointer-events: none;
+    /* pointer-events: none; */
 
     h2 {
       font-size: 30px;
@@ -483,6 +484,15 @@ const StyleFindUs = styled.div`
   }
 `
 
+const opts = {
+  height: '390',
+  width: '740',
+  playerVars: {
+    // https://developers.google.com/youtube/player_parameters
+    autoplay: 0,
+  },
+}
+
 export default function Home({ data, contactData }) {
   const [date, setDate] = useState(new Date())
   const [pageData, setPageData] = useState(data.en)
@@ -594,6 +604,16 @@ export default function Home({ data, contactData }) {
     setTextareaOther(e.target.value)
   }
 
+  const onYTReday = (e) => {
+    // console.log('yt ready!!', e.target)
+    // e.target.playVideo()
+  }
+
+  const onYTEnd = (e) => {
+    console.log('yt end')
+    e.target.playVideo()
+  }
+
   return (
     <>
       <ContainerFluid>
@@ -606,15 +626,27 @@ export default function Home({ data, contactData }) {
           </div>
           <div className="video">
             {video ? (
-              <iframe
-                width="560"
-                height="315"
-                src={`https://www.youtube.com/embed/${video.url}`}
-                title="YouTube video player"
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              ></iframe>
+              // <iframe
+              //   width="560"
+              //   height="315"
+              //   src={`https://www.youtube.com/embed/${video.url}`}
+              //   title="YouTube video player"
+              //   frameBorder="0"
+              //   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              //   allowFullScreen
+              // ></iframe>
+              // <YouTube videoId={'fDcBzLHdpPI'} opt={opts} onReady={onYTReday} onPlay={onYTPlay} />
+              <YouTube
+                video={video.url}
+                autoplay={true}
+                controls={false}
+                showCaptions={false}
+                onReady={onYTReday}
+                onEnd={onYTEnd}
+                muted={true}
+                showInfo={false}
+                rel={true}
+              />
             ) : null}
           </div>
           <div className="content">
