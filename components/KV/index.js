@@ -153,7 +153,7 @@ function KV(props) {
   return (
     <ContainerFluid>
       <StyleKv>
-        {video ? (
+        {video.url ? (
           <div className="video">
             <div className="videoMask">
               <YouTube
