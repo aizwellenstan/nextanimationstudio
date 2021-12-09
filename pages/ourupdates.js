@@ -11,7 +11,8 @@ import { Container } from '../components/Layout/Wrapper'
 import Breadcrumb from '../components/Layout/Breadcrumb'
 import Title from '../components/Layout/Title'
 import { IconArrowRightBottom } from '../components/Icons'
-import InfiniteScroll from 'react-infinite-scroller'
+// import InfiniteScroll from 'react-infinite-scroller'
+import InfiniteScroll from 'react-infinite-scroll-component'
 
 const StyleMain = styled.div`
   width: 100%;
@@ -140,7 +141,9 @@ const StyleItem = styled.div`
 
 export default function OurUpdates({ data }) {
   const { year } = data
-  const page = useRef(1)
+  const currentPage = useRef(0)
+  const totalPage = useRef(1)
+  const [isMore, setIsMore] = useState(true)
   const [nowYear, setNowYear] = useState(year[0].text)
   const orgData = useRef()
   const [pageData, setPageData] = useState(data.en)
@@ -163,7 +166,7 @@ export default function OurUpdates({ data }) {
   const handleYearData = async (year) => {
     if (year === nowYear) return
     setNowYear(year)
-    page.current = 1
+    currentPage.current = 1
 
     const res = await axios.get(`${process.env.HOST}/getUpdate`, {
       year: year,
@@ -174,28 +177,58 @@ export default function OurUpdates({ data }) {
     handlePageData(orgData.current)
   }
 
-  const handleFetch = async (_page) => {
-    if (_page > pageData.totalPage) return
-    console.log(_page, nowYear)
+  const fetchMoreData = async () => {
+    // console.log('fetch fn!!', currentPage.current, totalPage.current, isMore)
+    if (currentPage.current >= totalPage.current) {
+      setIsMore(false)
+      return
+    }
+    currentPage.current += 1
 
-    const res = await axios.get(`${process.env.HOST}/getUpdate`, {
-      page: _page,
+    const res = await axios.post(`${process.env.HOST}/getUpdate`, {
+      page: currentPage.current,
       year: nowYear,
     })
     const data = res.data
 
-    page.current = _page
     orgData.current = data
     handlePageData(orgData.current)
+
+    console.log('fetch more data', data)
   }
 
-  useEffect(() => {
-    orgData.current = data
-  }, [])
+  // const handleFetch = async (_page) => {
+  //   if (_page > pageData.totalPage) return
+  //   console.log(_page, nowYear)
+
+  //   const res = await axios.get(`${process.env.HOST}/getUpdate`, {
+  //     page: _page,
+  //     year: nowYear,
+  //   })
+  //   const data = res.data
+
+  //   page.current = _page
+  //   orgData.current = data
+  //   handlePageData(orgData.current)
+  // }
+
+  // useEffect(() => {
+  //   orgData.current = data
+  // }, [])
 
   useEffect(() => {
-    page.current = 1
-    handlePageData(orgData.current)
+    if (language === LANGUAGE_CN) {
+      setPageData(data.cn)
+    }
+    if (language === LANGUAGE_JP) {
+      setPageData(data.jp)
+    }
+    if (language === LANGUAGE_EN) {
+      setPageData(data.en)
+    }
+
+    totalPage.current = pageData.totalPage
+    fetchMoreData()
   }, [language, data])
 
   return (
@@ -222,14 +255,11 @@ export default function OurUpdates({ data }) {
         </StyleYear>
         <StyleList>
           <InfiniteScroll
-            pageStart={0}
-            loadMore={() => handleFetch(page.current + 1)}
-            hasMore={true || false}
-            loader={
-              <div className="loader" key={0}>
-                {page.current !== pageData.totalPage ? 'Loading ...' : ''}
-              </div>
-            }
+            dataLength={currentPage.current}
+            next={fetchMoreData}
+            hasMore={isMore}
+            loader={'loading...'}
+            endMessage={''}
           >
             {pageData.list.map((item) => {
               return (

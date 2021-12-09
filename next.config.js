@@ -2,7 +2,8 @@ module.exports = {
   // reactStrictMode: true,
   env: {
     // HOST: 'http://localhost:3000',
-    HOST: 'https://nas.api.smartores.com',
+    // HOST: 'https://nas.api.smartores.com',
+    HOST: 'https://nas.api.nextanimationstudio.com',
   },
   images: {
     domains: ['picsum.photos', 'nas.admin.smartores.com'],

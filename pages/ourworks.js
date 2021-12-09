@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
@@ -11,12 +11,24 @@ import { Container } from '../components/Layout/Wrapper'
 import Breadcrumb from '../components/Layout/Breadcrumb'
 import Title from '../components/Layout/Title'
 import { IconArrowRightBottom } from '../components/Icons'
+import InfiniteScroll from 'react-infinite-scroll-component'
+import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry'
+import { v4 as uuidv4 } from 'uuid'
+import _ from 'lodash'
 
 const StyleContent = styled.div`
   margin: 0 auto;
 
   @media (min-width: ${({ theme }) => theme.breakPiont.lg}) {
     max-width: 1280px;
+  }
+
+  .grid-container {
+    padding-bottom: 100px;
+
+    @media (min-width: ${({ theme }) => theme.breakPiont.md}) {
+      padding-bottom: 200px;
+    }
   }
 `
 
@@ -71,7 +83,7 @@ const StyleTypeItem = styled.div`
 `
 
 const StyleGrid = styled.div`
-  column-count: 1;
+  /* column-count: 1;
   column-gap: 15px;
   column-fill: auto;
   padding-bottom: 100px;
@@ -79,15 +91,15 @@ const StyleGrid = styled.div`
   @media (min-width: ${({ theme }) => theme.breakPiont.md}) {
     column-count: 2;
     padding-bottom: 200px;
-  }
+  } */
 `
 
 const StyleWorkItem = styled.div`
   /* flex: 1 0 50%; */
   position: relative;
-  margin-bottom: 20px;
-  word-wrap: break-word;
-  column-break-inside: avoid;
+  margin: 10px;
+  /* word-wrap: break-word; */
+  /* column-break-inside: avoid; */
   background-color: ${({ theme }) => theme.color.gray};
 
   a {
@@ -178,16 +190,25 @@ const StyleFilter = styled.div`
 `
 
 export default function OurWorks({ data }) {
-  // const [orgData, setOrgData] = useState(data)
+  const { type, filter } = data
+  const currentPage = useRef(0)
+  const totalPage = useRef(1)
   const [pageData, setPageData] = useState(data.en)
+  const [workData, setWorkData] = useState([])
+  const [filterData, setFilterData] = useState([])
+  const [isMore, setIsMore] = useState(true)
+  const [filterStatus, setFilterStatus] = useState([])
+  //
   const router = useRouter()
   const language = useLanguage()
   const path = usePath(language)
-  const { type, filter } = data
-  const [filterStatus, setFilterStatus] = useState([])
 
   const filterHandler = async (tag) => {
     console.log('filter', tag)
+    currentPage.current = 0
+    setIsMore(true)
+    // const emptyArr = []
+    // setWorkData(emptyArr)
 
     const newStatus = [...filterStatus]
 
@@ -195,28 +216,108 @@ export default function OurWorks({ data }) {
       return item.tag === tag ? (item.status ? (item.status = false) : (item.status = true)) : null
     })
 
-    setFilterStatus(newStatus)
-
     const newFilter = newStatus.filter((item) => {
       return item.status
     })
+    setFilterStatus(newFilter)
+
+    // console.log('newFilter:', newFilter)
+    // fetchMoreData(newFilter)
+
+    // currentPage.current = 1
+    // setIsMore(true)
+    currentPage.current += 1
 
     const res = await axios.post(`${process.env.HOST}/getWork`, {
       filter: newFilter,
+      page: 1,
     })
     const data = res.data
 
     // console.log('get work filter:', newFilter, data)
 
     if (language === LANGUAGE_CN) {
-      setPageData(data.cn)
+      // setPageData(data.cn)
+      setWorkData(data.cn.works)
+      totalPage.current = data.cn.totalPage
     }
     if (language === LANGUAGE_JP) {
-      setPageData(data.jp)
+      // setPageData(data.jp)
+      setWorkData(data.jp.works)
+      totalPage.current = data.jp.totalPage
     }
     if (language === LANGUAGE_EN) {
-      setPageData(data.en)
+      // setPageData(data.en)
+      setWorkData(data.en.works)
+      totalPage.current = data.en.totalPage
+
+      console.log('total page in filter:', data.en.totalPage)
     }
+  }
+
+  const fetchMoreData = async (_filter) => {
+    console.log('fetch fn!!', workData, currentPage.current, totalPage.current)
+    if (currentPage.current >= totalPage.current) {
+      setIsMore(false)
+      return
+    }
+    currentPage.current += 1
+    // console.log(_filter)
+    // if (_filter) {
+    //   setWorkData([])
+    // }
+
+    const res = await axios.post(`${process.env.HOST}/getWork`, {
+      filter: _filter,
+      // filter: [{ id: 1, tag: 'MODEL', status: true }],
+      page: currentPage.current,
+    })
+    const data = res.data
+
+    console.log('data:', data.en.works)
+
+    let newWorks = []
+    if (language === LANGUAGE_CN) {
+      if (workData.length <= 0) {
+        setWorkData(data.cn.works)
+        return
+      }
+      newWorks = [...pageData.works].concat(data.cn.works)
+      totalPage.current = data.cn.totalPage
+    }
+    if (language === LANGUAGE_JP) {
+      if (workData.length <= 0) {
+        setWorkData(data.jp.works)
+        return
+      }
+      newWorks = [...pageData.works].concat(data.jp.works)
+      totalPage.current = data.jp.totalPage
+    }
+    if (language === LANGUAGE_EN) {
+      if (workData.length <= 0) {
+        console.log('here')
+        setWorkData(data.en.works)
+        return
+      }
+      // console.log('filter: ', _filter)
+      // if (_filter && _filter.length > 1) {
+      //   if (filterData.length <= 0) {
+      //     console.log('has filter no data')
+      //     setFilterData(data.en.works)
+      //     newWorks = data.en.works
+      //   } else {
+      //     console.log('has filter has data')
+      //     newWorks = [...filterData].concat(data.en.works)
+      //   }
+      // } else {
+      // }
+      newWorks = [...workData].concat(data.en.works)
+      totalPage.current = data.en.totalPage
+      console.log('total page:', data.en.totalPage)
+    }
+    setWorkData(newWorks)
+
+    console.log('fetch more data', currentPage.current, workData, newWorks)
   }
 
   useEffect(() => {
@@ -230,8 +331,15 @@ export default function OurWorks({ data }) {
       setPageData(data.en)
     }
 
+    totalPage.current = pageData.totalPage
     setFilterStatus(filter)
+    fetchMoreData(filter)
   }, [language, data])
+
+  // useEffect(() => {
+  //   console.log('change filter!!')
+  //   setWorkData([])
+  // }, [filterStatus])
 
   return (
     <Container>
@@ -258,43 +366,56 @@ export default function OurWorks({ data }) {
           <i></i>
           <i></i>
         </StyleType>
-        <StyleGrid>
-          <StyleFilter>
-            {filter.map((item) => {
-              return (
-                <div key={item.id} className={item.status ? 'active' : null} onClick={() => filterHandler(item.tag)}>
-                  {item.tag}
-                </div>
-              )
-            })}
-          </StyleFilter>
 
-          {pageData.works.map((item) => {
+        {/* <StyleFilter>
+          {filter.map((item) => {
             return (
-              <StyleWorkItem key={item.id}>
-                <Link href={`${path}/ourworks/${item.id}`} passHref>
-                  <a>
-                    <figure>
-                      <Image
-                        src={item.image.url}
-                        alt=""
-                        layout="responsive"
-                        width={item.image.width}
-                        height={item.image.height}
-                      />
-                    </figure>
-                    <h2>
-                      <span>{item.title}</span>
-                      <i>
-                        <IconArrowRightBottom fill="#15ff93" />
-                      </i>
-                    </h2>
-                  </a>
-                </Link>
-              </StyleWorkItem>
+              <div key={item.id} className={item.status ? 'active' : null} onClick={() => filterHandler(item.tag)}>
+                {item.tag}
+              </div>
             )
           })}
-        </StyleGrid>
+        </StyleFilter> */}
+
+        <div className="grid-container">
+          <InfiniteScroll
+            dataLength={currentPage.current}
+            next={fetchMoreData}
+            hasMore={isMore}
+            loader={'loading...'}
+            endMessage={''}
+          >
+            <ResponsiveMasonry columnsCountBreakPoints={{ 576: 1, 768: 2 }}>
+              <Masonry columnsCount={2}>
+                {workData.map((item) => {
+                  return (
+                    <StyleWorkItem key={item.id}>
+                      <Link href={`${path}/ourworks/${item.id}`} passHref>
+                        <a>
+                          <figure>
+                            <Image
+                              src={item.image.url}
+                              alt=""
+                              layout="responsive"
+                              width={item.image.width}
+                              height={item.image.height}
+                            />
+                          </figure>
+                          <h2>
+                            <span>{item.title}</span>
+                            <i>
+                              <IconArrowRightBottom fill="#15ff93" />
+                            </i>
+                          </h2>
+                        </a>
+                      </Link>
+                    </StyleWorkItem>
+                  )
+                })}
+              </Masonry>
+            </ResponsiveMasonry>
+          </InfiniteScroll>
+        </div>
       </StyleContent>
     </Container>
   )
