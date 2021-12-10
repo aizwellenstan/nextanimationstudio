@@ -13,8 +13,6 @@ import Title from '../components/Layout/Title'
 import { IconArrowRightBottom } from '../components/Icons'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry'
-import { v4 as uuidv4 } from 'uuid'
-import _ from 'lodash'
 
 const StyleContent = styled.div`
   margin: 0 auto;
@@ -191,11 +189,8 @@ const StyleFilter = styled.div`
 
 export default function OurWorks({ data }) {
   const { type, filter } = data
-  const currentPage = useRef(0)
   const totalPage = useRef(1)
   const [pageData, setPageData] = useState(data.en)
-  const [workData, setWorkData] = useState([])
-  const [filterData, setFilterData] = useState([])
   const [isMore, setIsMore] = useState(true)
   const [filterStatus, setFilterStatus] = useState([])
   //
@@ -205,10 +200,7 @@ export default function OurWorks({ data }) {
 
   const filterHandler = async (tag) => {
     console.log('filter', tag)
-    currentPage.current = 0
     setIsMore(true)
-    // const emptyArr = []
-    // setWorkData(emptyArr)
 
     const newStatus = [...filterStatus]
 
@@ -216,111 +208,51 @@ export default function OurWorks({ data }) {
       return item.tag === tag ? (item.status ? (item.status = false) : (item.status = true)) : null
     })
 
+    // console.log('newStatus:', newStatus)
+
     const newFilter = newStatus.filter((item) => {
       return item.status
     })
-    setFilterStatus(newFilter)
 
     // console.log('newFilter:', newFilter)
-    // fetchMoreData(newFilter)
 
-    // currentPage.current = 1
-    // setIsMore(true)
-    currentPage.current += 1
-
-    const res = await axios.post(`${process.env.HOST}/getWork`, {
+    const res = await axios.post(`${process.env.HOST}/getOurWork`, {
       filter: newFilter,
-      page: 1,
     })
     const data = res.data
 
-    // console.log('get work filter:', newFilter, data)
-
     if (language === LANGUAGE_CN) {
-      // setPageData(data.cn)
-      setWorkData(data.cn.works)
-      totalPage.current = data.cn.totalPage
+      setPageData(data.cn)
+      totalPage.current = data.cn.total
     }
     if (language === LANGUAGE_JP) {
-      // setPageData(data.jp)
-      setWorkData(data.jp.works)
-      totalPage.current = data.jp.totalPage
+      setPageData(data.jp)
+      totalPage.current = data.jp.total
     }
     if (language === LANGUAGE_EN) {
-      // setPageData(data.en)
-      setWorkData(data.en.works)
-      totalPage.current = data.en.totalPage
-
-      console.log('total page in filter:', data.en.totalPage)
+      setPageData(data.en)
+      totalPage.current = data.en.total
     }
   }
 
   const fetchMoreData = async (_filter) => {
-    console.log('fetch fn!!', workData, currentPage.current, totalPage.current)
-    if (currentPage.current >= totalPage.current) {
+    console.log('fetch fn!!', pageData.works.length, totalPage.current)
+    if (pageData.works.length >= totalPage.current) {
       setIsMore(false)
       return
     }
-    currentPage.current += 1
-    // console.log(_filter)
-    // if (_filter) {
-    //   setWorkData([])
-    // }
 
-    const res = await axios.post(`${process.env.HOST}/getWork`, {
+    const amount = 5
+    const last =
+      pageData.works.length + amount >= totalPage.current ? totalPage.current : pageData.works.length + amount
+
+    const res = await axios.post(`${process.env.HOST}/getOurWork`, {
       filter: _filter,
-      // filter: [{ id: 1, tag: 'MODEL', status: true }],
-      page: currentPage.current,
+      begin: 0,
+      end: last - 1,
     })
     const data = res.data
 
-    console.log('data:', data.en.works)
-
-    let newWorks = []
-    if (language === LANGUAGE_CN) {
-      if (workData.length <= 0) {
-        setWorkData(data.cn.works)
-        return
-      }
-      newWorks = [...pageData.works].concat(data.cn.works)
-      totalPage.current = data.cn.totalPage
-    }
-    if (language === LANGUAGE_JP) {
-      if (workData.length <= 0) {
-        setWorkData(data.jp.works)
-        return
-      }
-      newWorks = [...pageData.works].concat(data.jp.works)
-      totalPage.current = data.jp.totalPage
-    }
-    if (language === LANGUAGE_EN) {
-      if (workData.length <= 0) {
-        console.log('here')
-        setWorkData(data.en.works)
-        return
-      }
-      // console.log('filter: ', _filter)
-      // if (_filter && _filter.length > 1) {
-      //   if (filterData.length <= 0) {
-      //     console.log('has filter no data')
-      //     setFilterData(data.en.works)
-      //     newWorks = data.en.works
-      //   } else {
-      //     console.log('has filter has data')
-      //     newWorks = [...filterData].concat(data.en.works)
-      //   }
-      // } else {
-      // }
-      newWorks = [...workData].concat(data.en.works)
-      totalPage.current = data.en.totalPage
-      console.log('total page:', data.en.totalPage)
-    }
-    setWorkData(newWorks)
-
-    console.log('fetch more data', currentPage.current, workData, newWorks)
-  }
-
-  useEffect(() => {
     if (language === LANGUAGE_CN) {
       setPageData(data.cn)
     }
@@ -330,16 +262,24 @@ export default function OurWorks({ data }) {
     if (language === LANGUAGE_EN) {
       setPageData(data.en)
     }
+  }
 
-    totalPage.current = pageData.totalPage
+  useEffect(() => {
+    if (language === LANGUAGE_CN) {
+      setPageData(data.cn)
+      totalPage.current = data.cn.total
+    }
+    if (language === LANGUAGE_JP) {
+      setPageData(data.jp)
+      totalPage.current = data.jp.total
+    }
+    if (language === LANGUAGE_EN) {
+      setPageData(data.en)
+      totalPage.current = data.en.total
+    }
+
     setFilterStatus(filter)
-    fetchMoreData(filter)
   }, [language, data])
-
-  // useEffect(() => {
-  //   console.log('change filter!!')
-  //   setWorkData([])
-  // }, [filterStatus])
 
   return (
     <Container>
@@ -367,7 +307,7 @@ export default function OurWorks({ data }) {
           <i></i>
         </StyleType>
 
-        {/* <StyleFilter>
+        <StyleFilter>
           {filter.map((item) => {
             return (
               <div key={item.id} className={item.status ? 'active' : null} onClick={() => filterHandler(item.tag)}>
@@ -375,54 +315,53 @@ export default function OurWorks({ data }) {
               </div>
             )
           })}
-        </StyleFilter> */}
+        </StyleFilter>
 
-        <div className="grid-container">
-          <InfiniteScroll
-            dataLength={currentPage.current}
-            next={fetchMoreData}
-            hasMore={isMore}
-            loader={'loading...'}
-            endMessage={''}
-          >
-            <ResponsiveMasonry columnsCountBreakPoints={{ 576: 1, 768: 2 }}>
-              <Masonry columnsCount={2}>
-                {workData.map((item) => {
-                  return (
-                    <StyleWorkItem key={item.id}>
-                      <Link href={`${path}/ourworks/${item.id}`} passHref>
-                        <a>
-                          <figure>
-                            <Image
-                              src={item.image.url}
-                              alt=""
-                              layout="responsive"
-                              width={item.image.width}
-                              height={item.image.height}
-                            />
-                          </figure>
-                          <h2>
-                            <span>{item.title}</span>
-                            <i>
-                              <IconArrowRightBottom fill="#15ff93" />
-                            </i>
-                          </h2>
-                        </a>
-                      </Link>
-                    </StyleWorkItem>
-                  )
-                })}
-              </Masonry>
-            </ResponsiveMasonry>
-          </InfiniteScroll>
-        </div>
+        <InfiniteScroll
+          className="grid-container"
+          dataLength={pageData.works.length}
+          next={fetchMoreData}
+          hasMore={isMore}
+          loader={'loading...'}
+          endMessage={''}
+        >
+          <ResponsiveMasonry columnsCountBreakPoints={{ 576: 1, 768: 2 }}>
+            <Masonry columnsCount={2}>
+              {pageData.works.map((item) => {
+                return (
+                  <StyleWorkItem key={item.id}>
+                    <Link href={`${path}/ourworks/${item.id}`} passHref>
+                      <a>
+                        <figure>
+                          <Image
+                            src={item.image.url}
+                            alt=""
+                            layout="responsive"
+                            width={item.image.width}
+                            height={item.image.height}
+                          />
+                        </figure>
+                        <h2>
+                          <span>{item.title}</span>
+                          <i>
+                            <IconArrowRightBottom fill="#15ff93" />
+                          </i>
+                        </h2>
+                      </a>
+                    </Link>
+                  </StyleWorkItem>
+                )
+              })}
+            </Masonry>
+          </ResponsiveMasonry>
+        </InfiniteScroll>
       </StyleContent>
     </Container>
   )
 }
 
 export const getStaticProps = async () => {
-  const res = await axios.get(`${process.env.HOST}/getWork`)
+  const res = await axios.get(`${process.env.HOST}/getOurWork`)
   const data = res.data
 
   console.log(data)

@@ -6,7 +6,7 @@ module.exports = {
     HOST: 'https://nas.api.nextanimationstudio.com',
   },
   images: {
-    domains: ['picsum.photos', 'nas.admin.smartores.com'],
+    domains: ['picsum.photos', 'nas.admin.smartores.com', 'nas.admin.nextanimationstudio.com'],
   },
   async rewrites() {
     return [
