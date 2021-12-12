@@ -235,6 +235,29 @@ export default function OurWorks({ data }) {
     }
   }
 
+  const scrollHandler = async (_last, _pageY) => {
+    // console.log(_last, _pageY)
+    const res = await axios.post(`${process.env.HOST}/getOurWork`, {
+      begin: 0,
+      end: _last - 1,
+    })
+    const data = res.data
+
+    if (language === LANGUAGE_CN) {
+      setPageData(data.cn)
+    }
+    if (language === LANGUAGE_JP) {
+      setPageData(data.jp)
+    }
+    if (language === LANGUAGE_EN) {
+      setPageData(data.en)
+    }
+
+    setTimeout(() => {
+      window.scrollTo(0, _pageY)
+    }, 200)
+  }
+
   const fetchMoreData = async (_filter) => {
     console.log('fetch fn!!', pageData.works.length, totalPage.current)
     if (pageData.works.length >= totalPage.current) {
@@ -253,15 +276,24 @@ export default function OurWorks({ data }) {
     })
     const data = res.data
 
+    let dataLength
+
     if (language === LANGUAGE_CN) {
       setPageData(data.cn)
+      dataLength = data.cn.works.length
     }
     if (language === LANGUAGE_JP) {
       setPageData(data.jp)
+      dataLength = data.jp.works.length
     }
     if (language === LANGUAGE_EN) {
       setPageData(data.en)
+      dataLength = data.en.works.length
     }
+
+    const sessionObj = JSON.parse(sessionStorage.getItem('pathType'))
+    const obj = Object.assign({}, sessionObj, { total: dataLength })
+    sessionStorage.setItem('pathType', JSON.stringify(obj))
   }
 
   useEffect(() => {
@@ -280,6 +312,14 @@ export default function OurWorks({ data }) {
 
     setFilterStatus(filter)
   }, [language, data])
+
+  useEffect(() => {
+    const { type, pageY, total } = JSON.parse(sessionStorage.getItem('pathType'))
+    if (type === 'back' && pageY) {
+      // console.log('s:', total, pageY)
+      scrollHandler(total, pageY)
+    }
+  }, [])
 
   return (
     <Container>
